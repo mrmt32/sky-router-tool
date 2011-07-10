@@ -1,0 +1,33 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Sky_Router_Tool_Web.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="HttpPort" Type="System.String" Scope="User">
+      <Value Profile="(Default)">80</Value>
+    </Setting>
+    <Setting Name="RouterUsername" Type="System.String" Scope="User">
+      <Value Profile="(Default)">admin</Value>
+    </Setting>
+    <Setting Name="RouterPassword" Type="System.String" Scope="User">
+      <Value Profile="(Default)">sky</Value>
+    </Setting>
+    <Setting Name="RouterHostname" Type="System.String" Scope="User">
+      <Value Profile="(Default)">192.168.0.1</Value>
+    </Setting>
+    <Setting Name="RouterPollInterval" Type="System.String" Scope="User">
+      <Value Profile="(Default)">60</Value>
+    </Setting>
+    <Setting Name="HttpUsername" Type="System.String" Scope="User">
+      <Value Profile="(Default)">admin</Value>
+    </Setting>
+    <Setting Name="HttpPassword" Type="System.String" Scope="User">
+      <Value Profile="(Default)">sky</Value>
+    </Setting>
+    <Setting Name="SkyCompatibilityMode" Type="System.String" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="RouterModel" Type="System.String" Scope="User">
+      <Value Profile="(Default)">DG834GT</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

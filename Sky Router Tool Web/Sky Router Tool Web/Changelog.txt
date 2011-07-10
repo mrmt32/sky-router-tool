@@ -1,0 +1,70 @@
+﻿###########################################
+#                                         #
+#  Sky Router Tool v1.0 beta 6 Changelog  #
+#                                         #
+###########################################
+
+-----
+V1.0 Beta 6
+-----
+-- Added: Error logging graph
+
+-- Fixed: Incorrect title on help page
+-- Fixed: The correct item on the right click menu is now bold
+-- Fixed: Problems in some browsers with the log consolidation settings page
+-- Fixed: Incorrect bandwidth logs on resync
+
+-----
+V1.0 Beta 5 r3
+-----
+-- Added: Partial support for the DG934G (The black Netgear router supplied by Sky Broadband)
+-- Added: Full help section
+-- Added: Run Command tool; Allows you to run any command on the router
+
+-- Changed: Double clicking the tray icon now opens the web interface
+
+-----
+V1.0 Beta 4
+-----
+-- Fixed: Problem with sky firmware due to the URL being to long
+
+-----
+V1.0 Beta 3
+-----
+-- Added: Sky Username, Password, SSID, Wireless Password and Default Channel calculator for both the DG834GT and the DG934G.
+
+-- Fixed: Problem with the latest sky firmware and the URL injection hack that was used casuing an "Unable to connect to the remote server" error.
+-- Fixed: Bug when running under Windows 2000 with SQL Server CE (it didn't like the date format I was using).
+
+-----
+V1.0 Beta 2
+-----
+-- Fixed: Bug when another service is running on port 80 (the program would fail before allowing you to change the port.
+-- Fixed: Installer now installs the correct version of SQL Server CE
+
+-----
+V1.0 Beta 1
+-----
+-- Complete re-write, now with proper logging facitilities and a web interface.
+
+-----
+V0.3
+-----
+-- Added: Report creation tool (see http://www.sherrardinteriors.com/pH-Mb/sky_router_tool/demo_report.html for an example report)
+-- Added: Help file
+-- Added: Extra details now shown on SNR and Bit Loading graphs ('used' SNR and max. theoretical bit loading)
+
+-----
+V0.2
+-----
+-- Added: Network Monitor (monitors down/upstream speed from router)
+-- Added: Average CRC error rate measurement 
+-- Added: Reset button on SNRM monitor page to reset graph
+-- Added: Login box can now save login details
+
+-- Fixed: Some problems with telnet communication
+
+-----
+V0.1
+-----
+Initial Release
