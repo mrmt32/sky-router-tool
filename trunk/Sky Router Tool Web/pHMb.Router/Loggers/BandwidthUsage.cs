@@ -28,6 +28,7 @@ namespace pHMb.Router.Loggers
             try
             {
                 bytesTransferred = routerCommand.RouterInfo.BytesTransferred;
+                DateTime retrieveTime = DateTime.Now;
                 uptime = routerCommand.RouterInfo.Uptime;
 
                 if (_firstLog || _lastUpdateTime < DateTime.Now - new TimeSpan(0, 10, 0))
@@ -59,22 +60,28 @@ namespace pHMb.Router.Loggers
                     }
 
                     // Check value isn't rediculous:
-                    if ((DateTime.Now - _lastUpdateTime).Seconds > 0)
+                    if ((retrieveTime - _lastUpdateTime).Seconds > 0)
                     {
-                        long upSpeed = bytesSinceLastUpdate[0] / (DateTime.Now - _lastUpdateTime).Seconds;
-                        long downSpeed = bytesSinceLastUpdate[1] / (DateTime.Now - _lastUpdateTime).Seconds;
-                        if ((downSpeed > 3932160) ||
-                            (upSpeed > 3932160))
+                        long upSpeed = bytesSinceLastUpdate[0] / (long)(retrieveTime - _lastUpdateTime).TotalSeconds;
+                        long downSpeed = bytesSinceLastUpdate[1] / (long)(retrieveTime - _lastUpdateTime).TotalSeconds;
+                        if ((downSpeed > (30 * 1024 * 1024) / 8) ||
+                            (upSpeed > (6 * 1024 * 1024) / 8))
                         {
-                            throw new ApplicationException("Speed out of range!");
+                            //Console.WriteLine("! Down Speed: {0:g} KB/s, Up Speed: {1:g} KB/s", downSpeed / 1024, upSpeed / 1024);
+                            //Console.WriteLine("> Down Speed: {0:g} KB/s, Up Speed: {1:g} KB/s", (30 * 1024) / 8, (6 * 1024) / 8);
+                            //Console.WriteLine("> This Time: {0:T}, Last Time: {1:T}, Difference {2:T}", retrieveTime, _lastUpdateTime, (retrieveTime - _lastUpdateTime));
+                            //Console.WriteLine("> Uptime: {0:G}", uptime);
+
+                            throw new ApplicationException("Speed out of range! Down Speed:" + downSpeed + ", Up Speed:" + upSpeed);
                         }
+                        //Console.WriteLine("Down Speed: {0:g} KB/s, Up Speed: {1:g} KB/s", downSpeed/1024, upSpeed/1024);
                     }
 
                     // Add value to database
                     string sqlQuery = string.Format("INSERT INTO BandwidthUsage (startTime, endTime, usageUp, usageDown) VALUES ('{0:MM/dd/yyyy HH:mm:ss}', '{1:MM/dd/yyyy HH:mm:ss}', {2:g}, {3:g})",
-                        _lastUpdateTime, DateTime.Now, bytesSinceLastUpdate[0], bytesSinceLastUpdate[1]);
+                        _lastUpdateTime, retrieveTime, bytesSinceLastUpdate[0], bytesSinceLastUpdate[1]);
 
-                    _lastUpdateTime = DateTime.Now;
+                    _lastUpdateTime = retrieveTime;
 
                     SqlCeCommand cmd = new SqlCeCommand(sqlQuery, databaseConnection);
                     cmd.ExecuteNonQuery();
