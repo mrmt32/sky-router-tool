@@ -116,6 +116,46 @@
     <Content Include="htdocs\do_cmd.sh">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="htdocs\pages\common\loading_text.html" />
+    <Content Include="htdocs\pages\graphs\adsl_connection_graphs.html" />
+    <Content Include="htdocs\pages\graphs\bandwidth_usage.html" />
+    <Content Include="htdocs\pages\graphs\blocks\adsl_connection.html" />
+    <Content Include="htdocs\pages\graphs\blocks\graph_menu.html" />
+    <Content Include="htdocs\pages\graphs\errors.html" />
+    <Content Include="htdocs\pages\graphs\graphs.html" />
+    <Content Include="htdocs\pages\graphs\graphs.js" />
+    <Content Include="htdocs\pages\graphs\snrm.html" />
+    <Content Include="htdocs\pages\help\Advanced\databases.html" />
+    <Content Include="htdocs\pages\help\Advanced\howitworks.html" />
+    <Content Include="htdocs\pages\help\Advanced\modifying.html" />
+    <Content Include="htdocs\pages\help\General\about.html" />
+    <Content Include="htdocs\pages\help\General\faq.html" />
+    <Content Include="htdocs\pages\help\General\supported_devices.html" />
+    <Content Include="htdocs\pages\help\help.html" />
+    <Content Include="htdocs\pages\help\Web Interface\graphs.html" />
+    <Content Include="htdocs\pages\help\Web Interface\home.html" />
+    <Content Include="htdocs\pages\help\Web Interface\settings.html" />
+    <Content Include="htdocs\pages\help\Web Interface\tools.html" />
+    <Content Include="htdocs\pages\home\connection_details.html" />
+    <Content Include="htdocs\pages\home\home.html" />
+    <Content Include="htdocs\pages\home\process_list.html" />
+    <Content Include="htdocs\pages\settings\blocks\settings_change_status.html" />
+    <Content Include="htdocs\pages\settings\overview.html" />
+    <Content Include="htdocs\pages\settings\Router Settings\router_isp.html" />
+    <Content Include="htdocs\pages\settings\settings.html" />
+    <Content Include="htdocs\pages\settings\Sky Router Tool\logging.html" />
+    <Content Include="htdocs\pages\settings\Sky Router Tool\log_consolidation.html" />
+    <Content Include="htdocs\pages\settings\Sky Router Tool\new_file.js" />
+    <Content Include="htdocs\pages\settings\Sky Router Tool\router_connection.html" />
+    <Content Include="htdocs\pages\tools\dump_firmware.html" />
+    <Content Include="htdocs\pages\tools\overview.html" />
+    <Content Include="htdocs\pages\tools\ping.html" />
+    <Content Include="htdocs\pages\tools\run_command.html" />
+    <Content Include="htdocs\pages\tools\sky_password.html" />
+    <Content Include="htdocs\pages\tools\speed_test.html" />
+    <Content Include="htdocs\pages\tools\target_snrm.html" />
+    <Content Include="htdocs\pages\tools\telnet.html" />
+    <Content Include="htdocs\pages\tools\tools.html" />
     <Content Include="index_pages.conf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
