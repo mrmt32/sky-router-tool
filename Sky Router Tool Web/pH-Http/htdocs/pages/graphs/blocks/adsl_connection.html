@@ -1,0 +1,40 @@
+<&contentdata
+block_name = 'adsl_connection_graph_block'
+author = 'mrmt32'
+type = 'block'
+>
+	<h2 id='pageTitle'><$title></h2>
+	
+	<div id='<$name>_graph' class='graph'>
+	
+	<$$loading_text_block:{}>
+	
+	<&javascript>
+		SendCommandToServer({action:'get_value', type:'current', name:parameters.name}, function(jsonResponse)
+			{
+				if (jsonResponse.isError)
+				{
+					$("#" + parameters.name + "_graph").html(jsonResponse.ErrorString);
+				}
+				else
+				{	
+					var curve = {data: new Array()};
+					
+					for (i in jsonResponse.ReturnData[parameters.name])
+					{
+						curve.data[i] = [i * 4.3125, jsonResponse.ReturnData[parameters.name][i]];
+					}
+					
+					$.plot($("#" + parameters.name + "_graph"), [curve], 
+					{  
+					points: { show: false }, 
+					lines: { show: true }, 
+					bars: { show: true, barWidth: 4.3125 },
+					pan: { interactive: true },
+					zoom: { interactive: true } 
+					});
+				}
+			});
+	<&/javascript>
+	</div>
+<&/contentdata>

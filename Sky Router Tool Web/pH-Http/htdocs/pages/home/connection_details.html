@@ -1,0 +1,110 @@
+<&contentdata 
+section_name = 'home'
+page_name = 'connection_details'
+author = 'mrmt32'
+type = 'page'
+>
+
+<h2>Connection Details</h2>
+<div id='connection_details'>
+<$$loading_text_block:{}>
+<&javascript delayed='true'>
+	SendCommandToServer({action:'get_value', type:'current', name:'connectionDetails;uptime'}, function(jsonResponse)
+	{
+		if (jsonResponse.isError)
+		{
+			$("#connection_details").html(jsonResponse.ErrorString);
+		}
+		else
+		{	
+			parameters = 
+			{
+			status: jsonResponse.ReturnData.connectionDetails.Status,
+			
+			downSyncRate: jsonResponse.ReturnData.connectionDetails.DownstreamSync.SyncRate,
+			downMaxRate: jsonResponse.ReturnData.connectionDetails.DownstreamSync.MaxAttainableRate,
+			downAttn: jsonResponse.ReturnData.connectionDetails.DownstreamSync.Attenuation,
+			downSnrm: jsonResponse.ReturnData.connectionDetails.DownstreamSync.SnrMargin,
+			
+			upSyncRate: jsonResponse.ReturnData.connectionDetails.UpstreamSync.SyncRate,
+			upMaxRate: jsonResponse.ReturnData.connectionDetails.UpstreamSync.MaxAttainableRate,
+			upAttn: jsonResponse.ReturnData.connectionDetails.UpstreamSync.Attenuation,
+			upSnrm: jsonResponse.ReturnData.connectionDetails.UpstreamSync.SnrMargin,
+			
+			adslMode: jsonResponse.ReturnData.connectionDetails.Mode,
+			adslChannel: jsonResponse.ReturnData.connectionDetails.Channel,
+			crcRate: Math.round((jsonResponse.ReturnData.connectionDetails.Errors.Total.Crc / jsonResponse.ReturnData.uptime) * 60 * 60 * 100) / 100
+			};
+		
+			ParseContentData(window.ContentData.blocks.connection_details_block, parameters, function(output)
+			{
+				$("#connection_details").html(output);
+			})
+		}
+	});
+
+<&/javascript>
+</div>
+<&/contentdata>
+
+<&contentdata
+block_name = 'connection_details_block'
+author = 'mrmt32'
+type = 'block'
+>
+<&javascript delayed='true'>
+	$("#rebootButton").click(function()
+	{
+		$("conStatus").html("Rebooting...");
+		SendCommandToServer({action:'reboot'}, function(jsonResponse)
+		{
+			ChangePage(document.location.hash.substring(1));
+		});
+	});
+	$("#resyncButton").click(function()
+	{
+		$("conStatus").html("Resyncing...");
+		SendCommandToServer({action:'resync'}, function(jsonResponse)
+		{
+			if (jsonResponse.isError)
+			{
+				alert("Error occured while resyncing: " + jsonResponse.ErrorString);
+			}
+
+			ChangePage(document.location.hash.substring(1));
+		});
+	});
+<&/javascript>
+<p>
+	Status: <&javascript>output = (parameters.status.toUpperCase() == "SHOWTIME") ? "<span id='conStatus' style='color: green'>Connected</span>" : "<span id='conStatus' style='color: red'>" + parameters.status + "</span>";<&/javascript>
+</p>
+<table>
+    <thead>
+        <tr>
+            <th scope="col"/><th scope="col">Downstream</th><th scope="col">Upstream</th>
+        </tr>
+    </thead>
+    <tr class='odd'>
+        <th scope="row">Sync Rate: </th><td>{$downSyncRate} <span class='unit'>Kbps</span></td><td>{$upSyncRate} <span class='unit'>Kbps</span></td>
+    </tr>
+    <tr>
+        <th scope="row">Max Rate: </th><td>{$downMaxRate} <span class='unit'>Kbps</span></td><td>{$upMaxRate} <span class='unit'>Kbps</span></td>
+    </tr>
+    <tr class='odd'>
+        <th scope="row">Attenuation: </th><td>{$downAttn} <span class='unit'>dB</span></td><td>{$upAttn} <span class='unit'>dB</span></td>
+    </tr>
+    <tr>
+        <th scope="row">SNR Margin: </th><td>{$downSnrm} <span class='unit'>dB</span></td><td>{$upSnrm} <span class='unit'>dB</span></td>
+    </tr>
+    <tr class='odd'>
+        <th scope="row">ADSL Mode: </th><td colspan="2">{$adslMode}</td>
+    </tr>
+    <tr>
+        <th scope="row">Channel: </th><td colspan="2">{$adslChannel}</td>
+    </tr>
+    <tr class='odd'>
+        <th scope="row">Average Error Rate: </th><td colspan="2">{$crcRate} <span class='unit'>CRC Errors/hr</span></td>
+    </tr>
+</table>
+<div class='quickButtons'><button id='rebootButton'>Reboot</button> - <button id='resyncButton'>Resync</button></div>
+<&/contentdata>

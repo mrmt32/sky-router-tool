@@ -1,0 +1,32 @@
+<&contentdata
+section_name = 'graphs'
+default_page = 'bandwidth'
+author = 'mrmt32'
+type = 'section'
+title = 'Graphs'
+display_order = '20'
+>
+<div class='contentBox sideBar'>
+<h3>Historic Graphs</h3>
+<ul>
+	<li><a href='#graphs,bandwidth'>Bandwidth Usage</a></li>	
+	<li><a href='#graphs,snrm'>Signal to Noise Ratio Margin</a></li>
+	<li><a href='#graphs,errors'>ADSL Errors</a></li>
+</ul>
+</div>
+
+<div class='contentBox sideBar'>
+<h3>ADSL Connection Graphs</h3>
+<ul>
+	<li><a href='#graphs,bitloading'>Bit Loading</a></li>	
+	<&javascript>
+		if (SrtSettings.RouterModel == "DG834GT")
+		{
+		 	output = "<li><a href='#graphs,snr'>Signal to Noise Ratio</a></li>";
+			output += "<li><a href='#graphs,qln'>Quiet Line Noise</a></li>";
+			output += "<li><a href='#graphs,hlog'>Attenuation</a></li>";
+		}
+	<&/javascript>
+</ul>
+</div>
+<&/contentdata>
