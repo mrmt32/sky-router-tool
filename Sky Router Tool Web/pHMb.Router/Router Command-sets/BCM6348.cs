@@ -6,128 +6,152 @@ using System.Text.RegularExpressions;
 
 namespace pHMb.Router.RouterCommandSets
 {
-    public class DG934G : Busybox
+    /// <summary>
+    /// Provides support for the Broadcom BCM6348 chipset
+    /// </summary>
+    public class BCM6348 : Busybox
     {
+        private object _updateLocker = new object();
+
         #region Private Methods
-        private Dictionary<int, int> GetBitLoading()
+        private Dictionary<int, double> ParseAdslTableDouble(string tableText)
         {
-            Dictionary<int, int> output = new Dictionary<int, int>();
-            int toneId = 0;
+            Dictionary<int, double> outputTable = new Dictionary<int, double>();
 
-            string bitLoadingText = _routerConnection.SendCommand("cat /proc/avalanche/avsar_bit_allocation_table");
+            Match regexMatch = Regex.Match(tableText, "\n   ([0-9]+)[\t ]*(-?[0-9]+\\.[0-9]+).*\n");
 
-            Match bitLoadingMatch = Regex.Match(bitLoadingText.Replace("AR7 DSL Modem US Bit Allocation:", "").Replace("AR7 DSL Modem DS Bit Allocation:", ""), "[A-f0-9]{2}");
-            while (bitLoadingMatch.Success)
+            while (regexMatch.Success)
             {
-                output.Add(toneId, Convert.ToInt32(bitLoadingMatch.Value, 16));
-                bitLoadingMatch = bitLoadingMatch.NextMatch();
-                toneId++;
+                outputTable.Add(int.Parse(regexMatch.Groups[1].Value), double.Parse(regexMatch.Groups[2].Value));
+
+                regexMatch = regexMatch.NextMatch();
             }
-            return output;
+
+            return outputTable;
         }
 
+        private Dictionary<int, int> ParseAdslTableInt(string tableText)
+        {
+            Dictionary<int, int> outputTable = new Dictionary<int, int>();
+
+            Match regexMatch = Regex.Match(tableText, "\n   ([0-9]+)[\t ]*?([0-9]+).*\n");
+
+            while (regexMatch.Success)
+            {
+                outputTable.Add(int.Parse(regexMatch.Groups[1].Value), int.Parse(regexMatch.Groups[2].Value));
+
+                regexMatch = regexMatch.NextMatch();
+            }
+
+            return outputTable;
+        }
+
+        /// <summary>
+        /// Gets bit loading info (how may bits are loaded onto each tone)
+        /// </summary>
+        /// <returns>Bit loading info</returns>
+        private Dictionary<int, int> GetBitLoading()
+        {
+            string bitLoadingText = _routerConnection.SendCommand("adslctl info --Bits");
+
+            return ParseAdslTableInt(bitLoadingText);
+        }
+
+        /// <summary>
+        /// Gets a table of SNR values for each tone
+        /// </summary>
+        /// <returns>Table of SNR values</returns>
+        private Dictionary<int, double> GetSnrTable()
+        {
+            string snrText = _routerConnection.SendCommand("adslctl info --SNR");
+
+            return ParseAdslTableDouble(snrText);
+        }
+
+        /// <summary>
+        /// Gets the Quiet Line Noise (this is determined during training and is a measure of the amount of noise on the line)
+        /// </summary>
+        /// <returns>Table of QLN values</returns>
+        private Dictionary<int, double> GetQlnTable()
+        {
+            string qlnText = _routerConnection.SendCommand("adslctl info --QLN");
+
+            return ParseAdslTableDouble(qlnText);
+        }
+
+        /// <summary>
+        /// Gets a table of Hlog(f) values (like attenuation)
+        /// </summary>
+        /// <returns>Table of Hlog(f) values</returns>
+        private Dictionary<int, double> GetHlogTable()
+        {
+            string hlogText = _routerConnection.SendCommand("adslctl info --Hlog");
+
+            return ParseAdslTableDouble(hlogText);
+        }
+
+        /// <summary>
+        /// Gets various connection details
+        /// </summary>
+        /// <returns>ConnectionDetails object holding the details</returns>
         private ConnectionDetails GetConnectionDetails()
         {
             ConnectionDetails details = new ConnectionDetails();
             details.DownstreamSync = new SyncDetails();
             details.UpstreamSync = new SyncDetails();
-            
-            // Get connection status
-            string connectionStatusText = _routerConnection.SendCommand("cat /proc/avalanche/avsar_modem_training");
 
-            // Get status text
-            details.Status = Regex.Match(connectionStatusText, "(.*?)\r?\n").Groups[1].Value;
+            // Get connection details from telnet
+            string conDetailsText = _routerConnection.SendCommand("adslctl info --stats");
+            
+            details.PowerState = (PowerState)Enum.Parse(typeof(PowerState), Regex.Match(conDetailsText, "Power State:[\t ]*(.*?)\n").Groups[1].Value);
+
+            details.Status = Regex.Match(conDetailsText, "Status:[\t ]*(.*?)(Retrain.*?)?\n").Groups[1].Value;
 
             // Check the modem is currently synced
-            if (details.Status == "SHOWTIME")
+            if (details.Status == "Showtime")
             {
                 try
                 {
-                    // Get mode table
-                    string modeTableText = _routerConnection.SendCommand("cat /proc/avalanche/avsar_dsl_modulation_schemes");
-
-                    // Get connection details from telnet
-                    string conDetailsText = _routerConnection.SendCommand("cat /proc/avalanche/avsar_modem_stats");
-
-                    details.PowerState = (PowerState)Enum.Parse(typeof(PowerState), Regex.Match(conDetailsText, "Power Management Status:[\t ]*(L.)").Groups[1].Value);
-
-                    // Parse mode ids
-                    Dictionary<int, string> modes = new Dictionary<int, string>();
-                    Match modeTableMatch = Regex.Match(modeTableText, "([^\t^\r^\n^ ]*)[\t ]*?0x([A-f0-9]*)");
-                    while (modeTableMatch.Success)
-                    {
-                        int currentModeId = Convert.ToInt32(modeTableMatch.Groups[2].Value, 16);
-
-                        if (!modes.ContainsKey(currentModeId))
-                            modes.Add(currentModeId, modeTableMatch.Groups[1].Value);
-
-                        modeTableMatch = modeTableMatch.NextMatch();
-                    }
-
                     // Parse ADSL mode
-                    Match modeMatch = Regex.Match(conDetailsText, "Trained Mode:[\t ]*([0-9]*)");
-                    int modeId = int.Parse(modeMatch.Groups[1].Value);
-                    details.Mode = modes[modeId];
+                    details.Mode = Regex.Match(conDetailsText, "Mode:\t*(.*)\n").Groups[1].Value;
 
                     // Parse Channel (interleaved/fast)
-                    Match channelMatch = Regex.Match(conDetailsText, "Trained Path:[\t ]*([0-9]*)");
-                    switch (channelMatch.Groups[1].Value)
-                    {
-                        case "0":
-                            details.Channel = "FAST";
-                            break;
-                        case "1":
-                            details.Channel = "INTERLEAVED";
-                            break;
-                        default:
-                            details.Channel = "Unknown";
-                            break;
-                    }
-                    
+                    details.Channel = Regex.Match(conDetailsText, "Channel:\t*([A-Za-z]*)\n").Groups[1].Value;
 
-                    // Parse SNR margins + Attenuations
-                    Match snrMatch = Regex.Match(conDetailsText, "DS Line Attenuation:[\t ]*?(-?[0-9]*\\.?[0-9]*)[\t ]*DS Margin:[\t ]*(-?[0-9]*\\.?[0-9]*)");
-                    details.DownstreamSync.SnrMargin = decimal.Parse(snrMatch.Groups[2].Value);
-                    details.DownstreamSync.Attenuation = decimal.Parse(snrMatch.Groups[1].Value);
-
-                    snrMatch = Regex.Match(conDetailsText, "US Line Attenuation:[\t ]*?(-?[0-9]*\\.?[0-9]*)[\t ]*US Margin:[\t ]*(-?[0-9]*\\.?[0-9]*)");
+                    // Parse SNR margins
+                    Match snrMatch = Regex.Match(conDetailsText, "SNR \\(dB\\):\t(-?[0-9]*\\.[0-9]*)\t\t(-?[0-9]*\\.[0-9]*)\n");
+                    details.DownstreamSync.SnrMargin = decimal.Parse(snrMatch.Groups[1].Value);
                     details.UpstreamSync.SnrMargin = decimal.Parse(snrMatch.Groups[2].Value);
-                    details.UpstreamSync.Attenuation = decimal.Parse(snrMatch.Groups[1].Value);
+
+                    // Parse Attenuations
+                    Match attnMatch = Regex.Match(conDetailsText, "Attn\\(dB\\):\t(-?[0-9]*\\.[0-9]*)\t\t(-?[0-9]*\\.[0-9]*)\n");
+                    details.DownstreamSync.Attenuation = decimal.Parse(attnMatch.Groups[1].Value);
+                    details.UpstreamSync.Attenuation = decimal.Parse(attnMatch.Groups[2].Value);
 
                     // Parse Power
-                    Match powerMatch = Regex.Match(conDetailsText, "US Transmit Power ?:[\t ]*([0-9]*)[\t ]*DS Transmit Power:[\t ]*([0-9]*)");
+                    Match powerMatch = Regex.Match(conDetailsText, "Pwr\\(dBm\\):\t(-?[0-9]*\\.[0-9]*)\t\t(-?[0-9]*\\.[0-9]*)\n");
                     details.DownstreamSync.Power = decimal.Parse(powerMatch.Groups[1].Value);
                     details.UpstreamSync.Power = decimal.Parse(powerMatch.Groups[2].Value);
 
                     // Parse max attainable rate (this is predicted by the router)
-                    Match maxRateMatch = Regex.Match(conDetailsText, "DS Max Attainable Bit Rate:[\t ]*([0-9]*) kbps");
+                    Match maxRateMatch = Regex.Match(conDetailsText, "Max\\(Kbps\\):\t([0-9]*)\t\t([0-9]*)\n");
                     details.DownstreamSync.MaxAttainableRate = int.Parse(maxRateMatch.Groups[1].Value);
-
-                    maxRateMatch = Regex.Match(conDetailsText, "US Max Attainable Bit Rate:[\t ]*([0-9]*) bps");
-                    details.UpstreamSync.MaxAttainableRate = int.Parse(maxRateMatch.Groups[1].Value) / 1024;
+                    details.UpstreamSync.MaxAttainableRate = int.Parse(maxRateMatch.Groups[2].Value);
 
                     // Parse sync rate
-                    Match syncRateMatch = Regex.Match(conDetailsText, "US Connection Rate:[\t ]*?([0-9]*)[\t ]*DS Connection Rate:[\t ]*([0-9]*)");
-                    details.DownstreamSync.SyncRate = int.Parse(syncRateMatch.Groups[2].Value);
-                    details.UpstreamSync.SyncRate = int.Parse(syncRateMatch.Groups[1].Value);
+                    Match syncRateMatch = Regex.Match(conDetailsText, "Rate \\(Kbps\\):\t([0-9]*)\t\t([0-9]*)\n");
+                    details.DownstreamSync.SyncRate = int.Parse(syncRateMatch.Groups[1].Value);
+                    details.UpstreamSync.SyncRate = int.Parse(syncRateMatch.Groups[2].Value);
 
                     // Parse Errors
-                    Match losErrorsMatch = Regex.Match(conDetailsText, "LOS errors:[\t ]*([0-9]*)");
-                    details.Errors.Total.Los = int.Parse(losErrorsMatch.Groups[1].Value);
+                    Match errorsMatch = Regex.Match(conDetailsText, "CRC = ([0-9]*)\nLOS = ([0-9]*)\nLOF = ([0-9]*)\nES  = ([0-9]*)\n");
 
-                    Match esErrorsMatch = Regex.Match(conDetailsText, "Errored Seconds:[\t ]*([0-9]*)");
-                    details.Errors.Total.Es = int.Parse(esErrorsMatch.Groups[1].Value);
-
-                    Match crcErrorsMatch = Regex.Match(conDetailsText, "CRC:[\t ]*([0-9]*)");
-                    details.Errors.Total.Crc = 0;
-                    while (crcErrorsMatch.Success)
-                    {
-                        details.Errors.Total.Crc += int.Parse(crcErrorsMatch.Groups[1].Value);
-                        crcErrorsMatch = crcErrorsMatch.NextMatch();
-                    }
-
-                    /*
+                    // Total errors:
+                    details.Errors.Total.Crc = int.Parse(errorsMatch.Groups[1].Value);
+                    details.Errors.Total.Los = int.Parse(errorsMatch.Groups[2].Value);
                     details.Errors.Total.Lof = int.Parse(errorsMatch.Groups[3].Value);
+                    details.Errors.Total.Es = int.Parse(errorsMatch.Groups[4].Value);
+
                     // Errors in last day:
                     errorsMatch = errorsMatch.NextMatch();
                     details.Errors.LatestDay.Crc = int.Parse(errorsMatch.Groups[1].Value);
@@ -164,7 +188,6 @@ namespace pHMb.Router.RouterCommandSets
                     details.Errors.M60Min.Los = int.Parse(errorsMatch.Groups[2].Value);
                     details.Errors.M60Min.Lof = int.Parse(errorsMatch.Groups[3].Value);
                     details.Errors.M60Min.Es = int.Parse(errorsMatch.Groups[4].Value);
-                    */
                 }
                 catch (FormatException)
                 {
@@ -178,7 +201,7 @@ namespace pHMb.Router.RouterCommandSets
         #region Public Data Types
         public class RouterData : Interfaces.IRouterData
         {
-            private DG934G _routerCommand;
+            private BCM6348 _routerCommand;
 
             private string _lanMacAddress;
             private ConnectionDetails _connectionDetails;
@@ -190,7 +213,7 @@ namespace pHMb.Router.RouterCommandSets
             private double? _uptime;
             private uint[] _bytesTransferred;
 
-            public RouterData(DG934G routerCommand)
+            public RouterData(BCM6348 routerCommand)
             {
                 LastUpdated = DateTime.Now;
                 _routerCommand = routerCommand;
@@ -233,7 +256,7 @@ namespace pHMb.Router.RouterCommandSets
                     return _processList;
                 }
             }
-
+            
             public Dictionary<int, int> BitLoading
             {
                 get
@@ -245,15 +268,14 @@ namespace pHMb.Router.RouterCommandSets
                     return _bitLoading;
                 }
             }
-
+            
             public Dictionary<int, double> Snr
             {
                 get
                 {
                     if (_snr == null)
                     {
-                        //_snr = _routerCommand.GetSnrTable();
-                        _snr = new Dictionary<int, double>();
+                        _snr = _routerCommand.GetSnrTable();
                     }
                     return _snr;
                 }
@@ -265,21 +287,19 @@ namespace pHMb.Router.RouterCommandSets
                 {
                     if (_hlog == null)
                     {
-                        //_hlog = _routerCommand.GetHlogTable();
-                        _hlog = new Dictionary<int, double>();
+                        _hlog = _routerCommand.GetHlogTable();
                     }
                     return _hlog;
                 }
             }
-
+            
             public Dictionary<int, double> Qln
             {
                 get
                 {
                     if (_qln == null)
                     {
-                        //_qln = _routerCommand.GetQlnTable();
-                        _qln = new Dictionary<int, double>();
+                        _qln = _routerCommand.GetQlnTable();
                     }
                     return _qln;
                 }
@@ -312,7 +332,6 @@ namespace pHMb.Router.RouterCommandSets
         #endregion
 
         #region Public Properties
-        private object _updateLocker = new object();
         private Interfaces.IRouterData _routerInfo;
         public override Interfaces.IRouterData RouterInfo
         {
@@ -331,15 +350,15 @@ namespace pHMb.Router.RouterCommandSets
                     _routerInfo = value;
                 }
             }
-        } 
+        }
         #endregion
 
         #region Public Methods
-        public DG934G(string username, string password, string host, int httpServerPort, string httpServerUsername, string httpServerPassword, bool skyCompatibilityMode)
-            : base(username, password, host, httpServerPort, httpServerUsername, httpServerPassword, skyCompatibilityMode) 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        public BCM6348(string username, string password, string host, int httpServerPort, string httpServerUsername, string httpServerPassword, bool skyCompatibilityMode) : base(username, password, host, httpServerPort, httpServerUsername, httpServerPassword, skyCompatibilityMode) 
         {
-            _routerConnection = new RouterHttp(username, password, host, httpServerPort, httpServerUsername, httpServerPassword, skyCompatibilityMode);
-            Update();
         }
 
         /// <summary>
@@ -350,15 +369,22 @@ namespace pHMb.Router.RouterCommandSets
             RouterInfo = new RouterData(this);
         }
 
-        public override void Resync()
+        /// <summary>
+        /// Set the target SNR margin
+        /// </summary>
+        /// <param name="targetSnrm">The target SNRM</param>
+        public override void SetTargetSnrm(double targetSnrm)
         {
-            throw new NotSupportedException("Resyncing is not supported for the DG934G router.");
+            _routerConnection.SendCommand(string.Format("adslctl configure --snr {0:N1}", targetSnrm));
         }
 
-        public override void SetTargetSnrm(double snrm)
+        /// <summary>
+        /// Resyncs the router
+        /// </summary>
+        public override void Resync()
         {
-            throw new NotSupportedException("Changing the target SNR margin is not supported for the DG934G router.");
-        } 
+            _routerConnection.SendCommand("adslctl connection --up");
+        }
         #endregion
     }
 }

@@ -5,6 +5,11 @@
 ###########################################
 
 -----
+V1.0 Beta 7
+-----
+-- Fixed: High CPU caused by infinate loop in HTTP server (occured when client unexpectily disconnects in a certain way)
+
+-----
 V1.0 Beta 6
 -----
 -- Added: Error logging graph

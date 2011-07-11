@@ -18,7 +18,7 @@ namespace Sky_Router_Tool_Web
         private NotifyIcon _systemTrayIcon;
         private HttpServer _httpServer;
         private RouterPoll _routerPoll;
-        private RouterHttp _routerConnection;
+        private IRouterConnection _routerConnection;
 
         private StreamWriter _routerPollLog;
         private StreamWriter _httpServerLog;
@@ -100,7 +100,7 @@ namespace Sky_Router_Tool_Web
             }
         }
 
-        void _routerConnection_ConnectionError(object sender, RouterHttp.ConnectionErrorEventArgs e)
+        void _routerConnection_ConnectionError(object sender, ConnectionErrorEventArgs e)
         {
             if (e.isIncorrectCredentials && (!_isErrorState || _errCount > 2))
             {
@@ -203,7 +203,7 @@ namespace Sky_Router_Tool_Web
             }
         }
 
-        public RouterHttp RouterConnection
+        public IRouterConnection RouterConnection
         {
             get
             {
@@ -306,19 +306,24 @@ namespace Sky_Router_Tool_Web
                 _httpServer.StartServer();
 
                 // Create a router connection
-                _routerConnection = new RouterHttp(Properties.Settings.Default.RouterUsername,
+                pHMb.Router.Interfaces.IRouterInterface routerInterface =
+                    (pHMb.Router.Interfaces.IRouterInterface)Activator.CreateInstance(typeof(pHMb.Router.Interfaces.IRouterInterface).Assembly.GetType("pHMb.Router.RouterCommandSets." + Properties.Settings.Default.RouterModel), 
+                    new object[] {Properties.Settings.Default.RouterUsername,
                     Properties.Settings.Default.RouterPassword,
                     Properties.Settings.Default.RouterHostname,
                     int.Parse(Properties.Settings.Default.HttpPort),
                     Properties.Settings.Default.HttpUsername,
                     Properties.Settings.Default.HttpPassword,
-                    bool.Parse(Properties.Settings.Default.SkyCompatibilityMode));
-                _routerConnection.ConnectionError += new EventHandler<RouterHttp.ConnectionErrorEventArgs>(_routerConnection_ConnectionError);
-                _routerConnection.ConnectionSuccess += new EventHandler(_routerConnection_ConnectionSuccess);
+                    bool.Parse(Properties.Settings.Default.SkyCompatibilityMode)});
+
+                _routerConnection = routerInterface.RouterConnection;
+                routerInterface.RouterConnection.ConnectionError += new EventHandler<ConnectionErrorEventArgs>(_routerConnection_ConnectionError);
+                routerInterface.RouterConnection.ConnectionSuccess += new EventHandler(_routerConnection_ConnectionSuccess);
+                
 
                 // Start the router polling loop
                 _routerPollLog = new StreamWriter(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\sky router tool\router_poll.log", true);
-                _routerPoll = new RouterPoll(_routerConnection, Properties.Settings.Default.RouterModel);
+                _routerPoll = new RouterPoll(routerInterface, Properties.Settings.Default.RouterModel);
                 _routerPoll.PollingInterval = int.Parse(Properties.Settings.Default.RouterPollInterval) * 1000;
                 _routerPoll.LogEvent += new EventHandler<RouterPoll.LogEventArgs>(_routerPoll_LogEvent);
                 _routerPoll.Loggers.Add(new pHMb.Router.Loggers.BandwidthUsage());
@@ -329,7 +334,7 @@ namespace Sky_Router_Tool_Web
                 // Add HTTP handler
                 _httpServer.SSHandlers.Add(Regex.Escape(Path.GetFullPath(_httpServer.DocumentRoot + "\\interface.json")),
                                 new pHMb.pHHttp.SSHandlers.SkyRouterTool(_routerPoll, _routerConnection, GetSettings, OnSettingChange,
-                                    (pHMb.Router.Interfaces.IRouterInterface)Activator.CreateInstance(typeof(pHMb.Router.Interfaces.IRouterInterface).Assembly.GetType("pHMb.Router.RouterCommandSets." + Properties.Settings.Default.RouterModel), _routerConnection)));
+                                    routerInterface));
             }
             catch (System.Net.Sockets.SocketException ex)
             {

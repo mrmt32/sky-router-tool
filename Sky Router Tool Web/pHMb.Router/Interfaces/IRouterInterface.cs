@@ -3,6 +3,8 @@ namespace pHMb.Router.Interfaces
 {
     public interface IRouterInterface
     {
+        IRouterConnection RouterConnection { get; }
+
         RouterProcessDetailed GetDetailedProcessInfo(int pid);
         string GetPing(string hostname);
         bool KillProcess(int pid);

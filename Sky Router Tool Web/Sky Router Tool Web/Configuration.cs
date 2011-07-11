@@ -26,7 +26,7 @@ namespace Sky_Router_Tool_Web
 
         private void Configuration_Load(object sender, EventArgs e)
         {
-            _mainClass.RouterConnection.ConnectionError += new EventHandler<RouterHttp.ConnectionErrorEventArgs>(RouterConnection_ConnectionError);
+            _mainClass.RouterConnection.ConnectionError += new EventHandler<ConnectionErrorEventArgs>(RouterConnection_ConnectionError);
             _mainClass.RouterConnection.ConnectionSuccess += new EventHandler(RouterConnection_ConnectionSuccess);
 
             if (_mainClass.RouterConnection.Connected)
@@ -60,11 +60,11 @@ namespace Sky_Router_Tool_Web
             }
         }
 
-        void RouterConnection_ConnectionError(object sender, RouterHttp.ConnectionErrorEventArgs e)
+        void RouterConnection_ConnectionError(object sender, ConnectionErrorEventArgs e)
         {
             if (this.InvokeRequired)
             {
-                this.Invoke(new EventHandler<RouterHttp.ConnectionErrorEventArgs>(RouterConnection_ConnectionError), sender, e);
+                this.Invoke(new EventHandler<ConnectionErrorEventArgs>(RouterConnection_ConnectionError), sender, e);
             }
             else
             {

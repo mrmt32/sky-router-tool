@@ -12,7 +12,7 @@ namespace pHMb.Router
     /// <summary>
     /// Class to connect to the DG834GT router using HTTP
     /// </summary>
-    public class RouterHttp
+    public class RouterHttp : IRouterConnection
     {
         #region Private Methods
         private void UploadLoaderFile()
@@ -96,11 +96,7 @@ namespace pHMb.Router
         #endregion
 
         #region Public Events
-        public class ConnectionErrorEventArgs : EventArgs
-        {
-            public Exception Exception;
-            public bool isIncorrectCredentials;
-        }
+        
         public event EventHandler<ConnectionErrorEventArgs> ConnectionError;
         private void OnConnectionError(Exception exception, bool isIncorrectCredentials)
         {

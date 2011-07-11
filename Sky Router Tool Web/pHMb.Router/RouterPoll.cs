@@ -17,7 +17,7 @@ namespace pHMb.Router
         #region Private Variables
         private string _routerType;
         private Thread _pollThread;
-        private RouterHttp _routerConnection;
+        private IRouterConnection _routerConnection;
         private Interfaces.IRouterInterface _routerCommand;
 
         private bool _isExcecuting = false;
@@ -28,7 +28,7 @@ namespace pHMb.Router
         private void StartPoll()
         {
             // Create connection to router
-            _routerCommand = (Interfaces.IRouterInterface)Activator.CreateInstance(Type.GetType("pHMb.Router.RouterCommandSets." + _routerType), _routerConnection);
+            //_routerCommand = (Interfaces.IRouterInterface)Activator.CreateInstance(Type.GetType("pHMb.Router.RouterCommandSets." + _routerType), _routerConnection);
 
             PollLoop();
         }
@@ -110,10 +110,10 @@ namespace pHMb.Router
         #endregion
 
         #region Public Methods
-        public RouterPoll(RouterHttp routerConnection, string routerType)
+        public RouterPoll(Interfaces.IRouterInterface routerCommand, string routerType)
         {
             _routerType = routerType;
-            _routerConnection = routerConnection;
+            _routerCommand = routerCommand;
             PollingInterval = 60000;
             Loggers = new List<ILogger>();
             ConsolidationPeriods = new List<ConsolidationPeriod>();
