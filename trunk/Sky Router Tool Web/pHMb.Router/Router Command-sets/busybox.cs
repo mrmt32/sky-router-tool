@@ -11,7 +11,14 @@ namespace pHMb.Router.RouterCommandSets
     /// </summary>
     public abstract class Busybox : Interfaces.IRouterInterface
     {
-        protected RouterHttp _routerHttp;
+        public IRouterConnection RouterConnection 
+        {
+            get
+            {
+                return _routerConnection;
+            }
+        }
+        protected IRouterConnection _routerConnection;
 
         #region Private Methods
 
@@ -21,7 +28,7 @@ namespace pHMb.Router.RouterCommandSets
         /// <returns>Time in seconds since last reset</returns>
         protected double GetUptime()
         {
-            string result = _routerHttp.SendCommand("cat /proc/uptime");
+            string result = _routerConnection.SendCommand("cat /proc/uptime");
             Match timesMatch = Regex.Match(result, "([0-9]*\\.[0-9]*) ([0-9]*\\.[0-9]*)");
 
             return double.Parse(timesMatch.Groups[1].Value);
@@ -33,7 +40,7 @@ namespace pHMb.Router.RouterCommandSets
         /// <returns>The number of bytes transfered, [0] is upload, [1] is download</returns>
         protected uint[] GetBytesTransferred()
         {
-            string result = _routerHttp.SendCommand("ifconfig ppp0");
+            string result = _routerConnection.SendCommand("ifconfig ppp0");
             Match transferedMatch = Regex.Match(result, "RX bytes:([0-9]*).*TX bytes:([0-9]*)");
 
             return new uint[] { uint.Parse(transferedMatch.Groups[2].Value), uint.Parse(transferedMatch.Groups[1].Value) };
@@ -77,7 +84,7 @@ namespace pHMb.Router.RouterCommandSets
 
         protected string GetLanMacAddress()
         {
-            string result = _routerHttp.SendCommand("ifconfig ath0");
+            string result = _routerConnection.SendCommand("ifconfig ath0");
 
             return Regex.Match(result, "HWaddr ([A-F0-9:]*)").Groups[1].Value.Replace(":", "");
         }
@@ -136,7 +143,7 @@ namespace pHMb.Router.RouterCommandSets
 
         protected List<RouterProcess> GetProcessList()
         {
-            string psText = _routerHttp.SendCommand("ps -w");
+            string psText = _routerConnection.SendCommand("ps -w");
             List<RouterProcess> processList = new List<RouterProcess>();
 
             Match processMatch = Regex.Match(psText, " *([0-9]+) *([A-z]+) *([0-9]*) (.)(.)(.) (.*)\n");
@@ -173,11 +180,9 @@ namespace pHMb.Router.RouterCommandSets
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="telnetConnection">An open telnet connection to the router</param>
-        public Busybox(RouterHttp routerHttp)
+        public Busybox(string username, string password, string host, int httpServerPort, string httpServerUsername, string httpServerPassword, bool skyCompatibilityMode)
         {
-            _routerHttp = routerHttp;
-            Update();
+            
         } 
         #endregion
 
@@ -195,7 +200,7 @@ namespace pHMb.Router.RouterCommandSets
 
         public byte[] GetFirmware()
         {
-            return Encoding.ASCII.GetBytes(_routerHttp.SendCommand("cat /dev/mtdblock/2; cat /dev/mtdblock/1"));
+            return Encoding.ASCII.GetBytes(_routerConnection.SendCommand("cat /dev/mtdblock/2; cat /dev/mtdblock/1"));
         }
 
         public string FlashFirmware(byte[] firmware)
@@ -213,7 +218,7 @@ namespace pHMb.Router.RouterCommandSets
         {
             RouterProcessDetailed process = new RouterProcessDetailed();
 
-            string psText = _routerHttp.SendCommand(string.Format("cat /proc/{0:G}/cmdline; echo @\\\\$@; cat /proc/{0:G}/environ; echo @\\\\$@; cat /proc/{0:G}/status", pid)).Replace("\0", " ");
+            string psText = _routerConnection.SendCommand(string.Format("cat /proc/{0:G}/cmdline; echo @\\\\$@; cat /proc/{0:G}/environ; echo @\\\\$@; cat /proc/{0:G}/status", pid)).Replace("\0", " ");
 
 
             process.CommandLine = Regex.Match(psText, "(.*?)@\\$@").Groups[1].Value;
@@ -269,7 +274,7 @@ namespace pHMb.Router.RouterCommandSets
         /// <returns>Result from ping operation</returns>
         public string GetPing(string hostname)
         {
-            return _routerHttp.SendCommand("ping -c 5 '" + hostname + "'");
+            return _routerConnection.SendCommand("ping -c 5 '" + hostname + "'");
         }
 
         /// <summary>
@@ -280,7 +285,7 @@ namespace pHMb.Router.RouterCommandSets
         /// <returns>The speed in KB/sec</returns>
         public double PerformSpeedTest(string url, double size)
         {
-            string result = _routerHttp.SendCommand(string.Format("cat /proc/uptime; wget -O /dev/null {0}; cat /proc/uptime", url));
+            string result = _routerConnection.SendCommand(string.Format("cat /proc/uptime; wget -O /dev/null {0}; cat /proc/uptime", url));
 
             // Parse times
             Match timesMatch = Regex.Match(result, "([0-9]*\\.[0-9]*) ([0-9]*\\.[0-9]*)\n");
@@ -295,7 +300,7 @@ namespace pHMb.Router.RouterCommandSets
 
         public bool KillProcess(int pid)
         {
-            string result = _routerHttp.SendCommand(string.Format("kill {0:G0}", pid));
+            string result = _routerConnection.SendCommand(string.Format("kill {0:G0}", pid));
             if (result.StartsWith("kill:"))
             {
                 return false;
@@ -308,7 +313,7 @@ namespace pHMb.Router.RouterCommandSets
 
         public void Reboot()
         {
-            _routerHttp.SendCommand("reboot");
+            _routerConnection.SendCommand("reboot");
         }
         #endregion
     }

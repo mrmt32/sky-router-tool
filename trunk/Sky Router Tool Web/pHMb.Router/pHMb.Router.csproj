@@ -95,7 +95,9 @@
   <ItemGroup>
     <Compile Include="ConnectionDetails.cs" />
     <Compile Include="ErrorDetails.cs" />
+    <Compile Include="Interfaces\IRouterConnection.cs" />
     <Compile Include="Loggers\Errors.cs" />
+    <Compile Include="Router Command-sets\BCM6348.cs" />
     <Compile Include="Router Command-sets\busybox.cs" />
     <Compile Include="Router Command-sets\DG834GT.cs" />
     <Compile Include="Exceptions\LoggerException.cs" />
@@ -111,12 +113,14 @@
     <Compile Include="Router Command-sets\DG934G.cs" />
     <Compile Include="Interfaces\IRouterInterface.cs" />
     <Compile Include="Interfaces\IRouterData.cs" />
+    <Compile Include="Router Command-sets\F%40ST2504.cs" />
     <Compile Include="RouterHttp.cs" />
     <Compile Include="RouterPoll.cs">
     </Compile>
     <Compile Include="RouterProcess.cs" />
     <Compile Include="SkyPasswordGen.cs" />
     <Compile Include="SyncDetails.cs" />
+    <Compile Include="TelnetConnector.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

@@ -281,7 +281,7 @@ namespace pHMb.pHHttp.SSHandlers
 
         #region Private Variables
         private RouterPoll _routerPoll;
-        private RouterHttp _routerConnection;
+        private IRouterConnection _routerConnection;
         private pHMb.Router.Interfaces.IRouterInterface _routerCommand;
 
         private GetSettingsDelegate _getSettings;
@@ -447,7 +447,7 @@ namespace pHMb.pHHttp.SSHandlers
         #endregion
 
         #region Public Methods
-        public SkyRouterTool(RouterPoll routerPoll, RouterHttp routerConnection, GetSettingsDelegate getSettings, SettingChangeDelegate settingsChanged, pHMb.Router.Interfaces.IRouterInterface routerCommand)
+        public SkyRouterTool(RouterPoll routerPoll, IRouterConnection routerConnection, GetSettingsDelegate getSettings, SettingChangeDelegate settingsChanged, pHMb.Router.Interfaces.IRouterInterface routerCommand)
         {
             _settingsChanged = settingsChanged;
             _getSettings = getSettings;
