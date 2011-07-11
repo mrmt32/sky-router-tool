@@ -44,6 +44,8 @@ namespace pHMb.Router.Loggers
                         _lastValues[1] = DownMargin;
                     }
 
+                    // Prevent large spikes (almost always anomolous), if a difference in SNRM over 20db is detected
+                    // then the current reading is discarded.
                     if (connectionDetails.Status.ToUpper() == "SHOWTIME" && (Math.Abs(UpMargin - _lastValues[0]) < 20) && (Math.Abs(DownMargin - _lastValues[1]) < 20))
                     {
                         string sqlQuery = string.Format("INSERT INTO Snrm (time, snrmUp, snrmDown) VALUES ('{0:MM/dd/yyyy HH:mm:ss}', {1:N1}, {2:N1})",
