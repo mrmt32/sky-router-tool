@@ -6,7 +6,7 @@ type = 'page'
 >
 	<h2 id='pageTitle'>Bandwidth Usage</h2>
 	
-	<$$graph_menu_block:{pagename: "bandwidth"}>
+	<$$graph_menu_block:{pagename: "bandwidth", errorCurve: parameters.errorCurve}>
 	
 	<div id='bandwidth_usage_graph' class='graph'>
 		
@@ -74,10 +74,6 @@ type = 'page'
 					uploadCurve.data[i] = [startTime, uploadSpeed];
 					i++;
 					
-					/*
-					$("#bandwidth_usage_year_table").append("<tr><td>" + logItem.startTime + "-" + logItem.endTime + "</td>"
-																+ "<td>" + logItem.usageUp + "</td>"
-																+ "<td>" + logItem.usageDown + "</td></tr>");*/
 					if ( !isset(logItem.usageDown) )
 					{
 						errorCurve.data[errCount] = [endTime, 100];
@@ -94,14 +90,28 @@ type = 'page'
 					}
 				}
 				
-				$.plot($("#bandwidth_usage_graph"), [downloadCurve, uploadCurve, errorCurve], { 
-					xaxis: { mode: "time", timeformat: timeFormat }, 
-					yaxis: { min: 0 },
-					points: { show: false }, 
-					lines: { show: true }, 
-					pan: { interactive: true },
-					zoom: { interactive: true } 
-					});
+				if (parameters.errorCurve != "on")
+                {
+                     $.plot($("#bandwidth_usage_graph"), [downloadCurve, uploadCurve], { 
+					    xaxis: { mode: "time", timeformat: timeFormat }, 
+					    yaxis: { min: 0 },
+					    points: { show: false }, 
+					    lines: { show: true }, 
+					    pan: { interactive: true },
+					    zoom: { interactive: true } 
+					    });
+                }
+                else
+                {
+				    $.plot($("#bandwidth_usage_graph"), [downloadCurve, uploadCurve, errorCurve], { 
+					    xaxis: { mode: "time", timeformat: timeFormat }, 
+					    yaxis: { min: 0 },
+					    points: { show: false }, 
+					    lines: { show: true }, 
+					    pan: { interactive: true },
+					    zoom: { interactive: true } 
+					    });
+                }
 			}
 		});
 		
@@ -130,6 +140,10 @@ type = 'page'
 		});
 	<&/javascript>
 	</div>
+    <div class='graphMenu'>
+        <&javascript>output = (parameters.errorCurve == "on") ? "<a href='#graphs,bandwidth&type=" + parameters.type + "&errorCurve=off'>Hide Downtime</a>" : "<a href='#graphs,bandwidth&type=" + parameters.type + "&errorCurve=on'>Show Downtime</a>";<&/javascript>
+        
+    </div>
 	<table id="bandwidthUsageTotals">
 	
 	</table>
