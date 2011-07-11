@@ -1,0 +1,45 @@
+<&contentdata 
+section_name = 'tools'
+page_name = 'target_snrm'
+author = 'mrmt32'
+type = 'page'
+>
+<div class="settingsPage">
+	<h2>Target SNR Margin</h2>
+	<form id="target_snrm_form">
+	<p>Select a target SNR margin percentage using the slider below:</p>
+	<fieldset>
+		<p id="currentValue" class='sliderValue'>100%</p>
+		<div id="target_snrm_slider"></div>
+	</fieldset>
+	<fieldset>
+		<p class='submitButton'><input type="submit" value="Set and Resync" /></p>
+	</fieldset>
+	</form>
+	
+	<&javascript delayed='true'>
+		$("#target_snrm_slider").slider({ min: 1, max: 500, value: 100, slide: function (event, ui){
+			$("#currentValue").html(ui.value + "%");
+		}});
+		
+	
+		$("#target_snrm_form").submit(function()
+		{
+			$.post(InterfaceLocation + "?action=set_target_snrm", {target_snrm: $("#target_snrm_slider").slider('option', 'value')}, function(jsonResponse)
+			{
+				ParseContentData(window.ContentData.blocks.settings_change_status_block, {jsonResponse:jsonResponse, dontShowValues: true}, function (output)
+				{
+					$(".settingsPage").html(output);
+				});
+				
+			}, "json");
+			
+			ParseContentData(window.ContentData.blocks.loading_text_block, {}, function (output)
+			{
+				$(".settingsPage").html(output);
+			});
+			return false;
+		});
+	<&/javascript>
+</div>
+<&/contentdata>

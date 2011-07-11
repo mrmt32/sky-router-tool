@@ -1,0 +1,97 @@
+<&contentdata 
+section_name = 'graphs'
+page_name = 'snrm'
+author = 'mrmt32'
+type = 'page'
+>
+	<h2 id='pageTitle'>Signal to Noise Ratio Margin</h2>
+	
+	<$$graph_menu_block:{pagename: "snrm"}>
+	
+	<div id='snrm_graph' class='graph'>
+	
+	<$$loading_text_block:{}>
+	
+	<&javascript delayed='true'>
+		var startTime;
+		var endTime;
+		var timeFormat;
+		
+		var times = pHMb.Graphing.ChangeTimeSpan(parameters.type, "Signal to Noise Ratio Margin");
+		
+		SendCommandToServer({action:'get_value', type:'log', name:'SNR Margin', startTime:times.startTime, endTime:times.endTime}, function(jsonResponse)
+			{
+				if (jsonResponse.isError)
+				{
+					$("#snrm_graph").html(jsonResponse.ErrorString);
+				}
+				else
+				{	
+					// Note that the returned data is sorted descending by date (so newest is first)
+					var downCurve = {label: "Downstream", data: new Array()};
+					var upCurve = {label: "Upstream", data: new Array()};
+					//var errorCurve = {label: "Downtime", data: new Array()};
+					
+					var i = 0;
+					var errCount = 0;
+					for (logItemId in jsonResponse.ReturnData)
+					{
+						var logItem = jsonResponse.ReturnData[logItemId];		
+						var time = logItem.time.getTime();
+						
+						downCurve.data[i] = [time, logItem.snrmDown];
+						upCurve.data[i] = [time, logItem.snrmUp];
+						i++;
+					}
+					
+					$.plot($("#snrm_graph"), [downCurve, upCurve], 
+					{ 
+					xaxis: { mode: "time", timeformat: timeFormat }, 
+					points: { show: false }, 
+					lines: { show: true }, 
+					pan: { interactive: true },
+					zoom: { interactive: true } 
+					});
+				}
+			});
+			
+			// Get totals and averages
+			SendCommandToServer({action:'get_value', type:'totals', name:'SNR Margin', startTime:times.startTime, endTime:times.endTime}, function(jsonResponse)
+			{
+				if (jsonResponse.isError)
+				{
+					$("#snrAverages").html(jsonResponse.ErrorString);
+				}
+				else
+				{	
+					parameters = 
+					{
+					avgSnrmDown: Math.round(jsonResponse.ReturnData[0].avgSnrmDown * 100) / 100,
+					avgSnrmUp: Math.round(jsonResponse.ReturnData[0].avgSnrmUp * 100) / 100
+					};
+				
+					ParseContentData(window.ContentData.blocks.snrm_averages_block, parameters, function(output)
+					{
+						$("#snrAverages").html(output);
+					})
+				}
+			});
+	<&/javascript>
+	</div>
+	<table id="snrAverages">
+		<tr><td><$$loading_text_block:{}></td></tr>
+	</table>
+<&/contentdata>
+
+<&contentdata
+block_name = 'snrm_averages_block'
+author = 'mrmt32'
+type = 'block'
+>
+	<thead>
+		<tr><th/><th>Downstream</th><th>Upstream</th></tr>
+	</thead>
+	<tr class="odd">
+		<th>Average SNR Margin: </th><td>{$avgSnrmDown} <span class='unit'>dB</span></td><td>{$avgSnrmUp} <span class='unit'>dB</span></td>
+	</tr>
+<&/contentdata>

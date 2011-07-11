@@ -1,0 +1,152 @@
+<&contentdata 
+section_name = 'graphs'
+page_name = 'bandwidth'
+author = 'mrmt32'
+type = 'page'
+>
+	<h2 id='pageTitle'>Bandwidth Usage</h2>
+	
+	<$$graph_menu_block:{pagename: "bandwidth"}>
+	
+	<div id='bandwidth_usage_graph' class='graph'>
+		
+	<$$loading_text_block:{}>
+		
+	<&javascript delayed='true'>
+		var startTime;
+		var endTime;
+		var timeFormat;
+		
+		var times = pHMb.Graphing.ChangeTimeSpan(parameters.type, "Bandwidth Usage");
+		
+		SendCommandToServer({action:'get_value', type:'log', name:'Bandwidth Usage', startTime:times.startTime, endTime:times.endTime}, function(jsonResponse)
+		{
+			if (jsonResponse.isError)
+			{
+				$("#bandwidth_usage_graph").html(jsonResponse.ErrorString);
+			}
+			else
+			{	
+				// Lets process the rediculous amount of data!
+				// Note that the returned data is sorted descending by date (so newest is first)
+				
+				var downloadCurve = {label: "Download", data: new Array()};
+				var uploadCurve = {label: "Upload", data: new Array()};
+				var errorCurve = {label: "Downtime", data: new Array()};
+				
+				var i = 0;
+				var errCount = 0;
+				var lastStartTime;
+				for (logItemId in jsonResponse.ReturnData)
+				{
+					var logItem = jsonResponse.ReturnData[logItemId];		
+					var startTime = logItem.startTime.getTime() - logItem.startTime.getTimezoneOffset() * 60 * 1000;
+					var endTime = logItem.endTime.getTime() - logItem.endTime.getTimezoneOffset() * 60 * 1000;
+					
+					// Check to see if there was any down time inbetween the last entry and this one:
+					if (isset(lastStartTime) && lastStartTime - endTime > 1000 * 60)
+					{
+						errorCurve.data[errCount] = [lastStartTime, 100];
+						downloadCurve.data[i] = [lastStartTime, null];
+						uploadCurve.data[i] = [lastStartTime, null];
+						i++;
+						errCount++;
+						
+						errorCurve.data[errCount] = [endTime, 100];
+						downloadCurve.data[i] = [endTime, null];
+						uploadCurve.data[i] = [endTime, null];
+						i++;
+						errCount++;
+					}
+					
+	
+					lastStartTime = startTime;
+									
+					// Calculate speed
+					var downloadSpeed = (logItem.usageDown / 1024) / ((endTime - startTime) / 1000)
+					var uploadSpeed = (logItem.usageUp / 1024) / ((endTime - startTime) / 1000)
+	
+					downloadCurve.data[i] = [endTime, downloadSpeed];
+					uploadCurve.data[i] = [endTime, uploadSpeed];
+					i++;
+					
+					downloadCurve.data[i] = [startTime, downloadSpeed];
+					uploadCurve.data[i] = [startTime, uploadSpeed];
+					i++;
+					
+					/*
+					$("#bandwidth_usage_year_table").append("<tr><td>" + logItem.startTime + "-" + logItem.endTime + "</td>"
+																+ "<td>" + logItem.usageUp + "</td>"
+																+ "<td>" + logItem.usageDown + "</td></tr>");*/
+					if ( !isset(logItem.usageDown) )
+					{
+						errorCurve.data[errCount] = [endTime, 100];
+						errCount++;
+						errorCurve.data[errCount] = [startTime, 100];
+						errCount++;
+					}
+					else
+					{
+						errorCurve.data[errCount] = [endTime, 0];
+						errCount++;
+						errorCurve.data[errCount] = [startTime, 0];
+						errCount++;
+					}
+				}
+				
+				$.plot($("#bandwidth_usage_graph"), [downloadCurve, uploadCurve, errorCurve], { 
+					xaxis: { mode: "time", timeformat: timeFormat }, 
+					yaxis: { min: 0 },
+					points: { show: false }, 
+					lines: { show: true }, 
+					pan: { interactive: true },
+					zoom: { interactive: true } 
+					});
+			}
+		});
+		
+		// Get totals and averages
+		SendCommandToServer({action:'get_value', type:'totals', name:'Bandwidth Usage', startTime:times.startTime, endTime:times.endTime}, function(jsonResponse)
+		{
+			if (jsonResponse.isError)
+			{
+				$("#bandwidth_usage_totals").html(jsonResponse.ErrorString);
+			}
+			else
+			{	
+				parameters = 
+				{
+				totalUsageDown: Math.round(jsonResponse.ReturnData[0].totalUsageDown / 1024 / 1024 *100) / 100,
+				totalUsageUp: Math.round(jsonResponse.ReturnData[0].totalUsageUp / 1024 / 1024 *100) / 100,
+				avgSpeedDown: Math.round(jsonResponse.ReturnData[0].avgDownSpeed / 1024 *100) / 100,
+				avgSpeedUp: Math.round(jsonResponse.ReturnData[0].avgUpSpeed / 1024 *100) / 100
+				};
+			
+				ParseContentData(window.ContentData.blocks.bandwitdth_usage_totals_block, parameters, function(output)
+				{
+					$("#bandwidthUsageTotals").html(output);
+				})
+			}
+		});
+	<&/javascript>
+	</div>
+	<table id="bandwidthUsageTotals">
+	
+	</table>
+<&/contentdata>
+
+<&contentdata
+block_name = 'bandwitdth_usage_totals_block'
+author = 'mrmt32'
+type = 'block'
+>
+	<thead>
+		<tr><th/><th>Download</th><th>Upload</th></tr>
+	</thead>
+	<tr class="odd">
+		<th>Total Usage: </th><td>{$totalUsageDown} <span class='unit'>MB</span></td><td>{$totalUsageUp} <span class='unit'>MB</span></td>
+	</tr>
+	<tr>
+		<th>Average Speed: </th><td>{$avgSpeedDown} <span class='unit'>KB/sec</span></td><td>{$avgSpeedUp} <span class='unit'>KB/sec</span></td>
+	</tr>
+<&/contentdata>

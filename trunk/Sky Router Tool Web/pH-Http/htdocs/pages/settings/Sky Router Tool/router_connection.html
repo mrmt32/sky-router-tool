@@ -1,0 +1,78 @@
+<&contentdata 
+section_name = 'settings'
+page_name = 'connection'
+author = 'mrmt32'
+type = 'page'
+>
+
+<div class='settingsPage'>
+	<h2>Router Connection Settings</h2>
+	<p>Here you can set up how Sky Router Tool connects to your router.</p>
+	<form action='interface.json?action=set_settings' method='post' id='routerConnectionForm'>
+	
+			<&javascript delayed='true'>
+					SendCommandToServer({action:'get_settings', settings:'RouterUsername;RouterPassword;RouterHostname;RouterModel'}, function(jsonResponse)
+					{
+						if (jsonResponse.isError)
+						{
+							$("#routerConnectionForm").html(jsonResponse.ErrorString);
+						}
+						else
+						{
+							$("#routerConnectionForm").submit(function()
+							{
+								// Update internal RouterModel setting value
+								SrtSettings.RouterModel = $("#routerConnectionForm #RouterModel option:selected").val();
+								
+								$.post(InterfaceLocation + "?action=set_settings", $("#routerConnectionForm").serialize(), function(jsonResponse)
+								{
+									ParseContentData(window.ContentData.blocks.settings_change_status_block, {jsonResponse:jsonResponse}, function (output)
+									{
+										$(".settingsPage").html(output);
+									});
+									
+								}, "json");
+								
+								ParseContentData(window.ContentData.blocks.loading_text_block, {}, function (output)
+								{
+									$(".settingsPage").html(output);
+								});
+								
+								return false;
+							});
+							
+							ParseContentData(window.ContentData.blocks.router_connection_settings_form_block, jsonResponse.ReturnData, function(output)
+							{
+								$("#routerConnectionForm").html(output);
+							})
+						}
+					});
+			<&/javascript>
+	
+	</form>
+</div>
+
+<&/contentdata>
+
+<&contentdata
+block_name = 'router_connection_settings_form_block'
+author = 'mrmt32'
+type = 'block'
+>
+<fieldset>	
+	<p>
+		<label for='RouterModel'>Router Type: </label>
+		<select id='RouterModel' name='RouterModel'>
+			<option value='DG834GT' <&javascript>output = (parameters.RouterModel == 'DG834GT') ? "selected='selected'" : ""<&/javascript>>Netgear DG834GT&nbsp;&nbsp;&nbsp;</option>	
+			<option value='DG934G' <&javascript>output = (parameters.RouterModel == 'DG934G') ? "selected='selected'" : ""<&/javascript>>Netgear DG934G&nbsp;&nbsp;&nbsp;</option>
+		</select>
+	</p>
+	<p>&nbsp</p>
+	<p><label for='RouterHostname'>Router Hostname: </label> <input type='text' name='RouterHostname' id='RouterHostname' value='<$RouterHostname>' /></p>
+	<p><label for='RouterUsername'>Router User Name: </label> <input type='text' name='RouterUsername' id='RouterUsername' value='<$RouterUsername>' /></p>
+	<p><label for='RouterUsername'>Router Password: </label> <input type='password' name='RouterPassword' id='RouterPassword' value='<$RouterPassword>' /></p>
+</fieldset>	
+<fieldset>
+	<p class='submitButton'><input type='submit' value='Save' /></p>
+</fieldset>
+<&/contentdata>
