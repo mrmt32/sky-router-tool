@@ -23,7 +23,7 @@ namespace pHMb.AlphaPortal.ContentDataBuilder
         {
 
             FolderBrowserDialog openDialog = new FolderBrowserDialog();
-            openDialog.SelectedPath = @"C:\Users\mrmt32\Documents\visual studio 2010\Projects\";
+            openDialog.SelectedPath = @"C:\Users\mrmt32\Documents\visual studio 2010\Projects\Sky Router Tool Web\Sources\pH-Http\htdocs\pages";
             if (openDialog.ShowDialog() == DialogResult.OK)
             {
                 _folderPath = openDialog.SelectedPath;
@@ -41,7 +41,7 @@ namespace pHMb.AlphaPortal.ContentDataBuilder
             cDataUpdateProcess.StartInfo.RedirectStandardOutput = true;
             cDataUpdateProcess.StartInfo.CreateNoWindow = true;
             cDataUpdateProcess.StartInfo.FileName = "updatePages.exe";
-            cDataUpdateProcess.StartInfo.Arguments = "\"" + _folderPath + "\" \"" + _folderPath + @"\..\htdocs\" + "\"";
+            cDataUpdateProcess.StartInfo.Arguments = "\"" + _folderPath + "\" \"" + _folderPath + @"\.." + "\"";
             cDataUpdateProcess.StartInfo.UseShellExecute = false;
             cDataUpdateProcess.OutputDataReceived += new DataReceivedEventHandler(cDataUpdateProcess_OutputDataReceived);
 

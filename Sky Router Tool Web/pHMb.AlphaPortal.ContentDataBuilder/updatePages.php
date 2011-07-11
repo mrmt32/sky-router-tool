@@ -27,10 +27,11 @@ class Block
 $contentData = array();
 $javascriptIncludes = "";
 
-foreach ( new RecursiveIteratorIterator( new RecursiveDirectoryIterator("./pages/")) as $fileInfo)
+foreach ( new RecursiveIteratorIterator( new RecursiveDirectoryIterator($_SERVER['argv'][1])) as $fileInfo)
 {
     if ($fileInfo->getBasename() != $fileInfo->getBasename(".html"))
     {
+        print("\t" . $fileInfo->getFilename() . "\r\n");
         $content = file_get_contents($fileInfo->getPathname());
         preg_match_all("/<&contentdata(.*?)>(.*?)<&\\/contentdata>/is", $content, $metaDataString, PREG_SET_ORDER);
         foreach ($metaDataString as $scriptItem)
@@ -64,7 +65,7 @@ foreach ( new RecursiveIteratorIterator( new RecursiveDirectoryIterator("./pages
 						$contentData["sections"][$metaData["section_name"]]->navigation->content = $scriptItem[2];
 						$contentData["sections"][$metaData["section_name"]]->navigation->author = $metaData["author"];
 						
-						print ("Section '" . $metaData["section_name"] . "' by " . $metaData["author"] . " loaded.<br/>");
+						print ("\t\tSection '" . $metaData["section_name"] . "' by " . $metaData["author"] . " loaded.\r\n");
 						break;
 						
 					case "PAGE":
@@ -78,7 +79,7 @@ foreach ( new RecursiveIteratorIterator( new RecursiveDirectoryIterator("./pages
 						$currentPage->author = $metaData["author"];
 						$currentPage->content = $scriptItem[2];
 						$contentData["sections"][$metaData["section_name"]]->pages[$currentPage->name] = $currentPage;
-						print ("Page '" . $metaData["section_name"] . "," . $metaData["page_name"] . "' by " . $metaData["author"] . " loaded.<br/>");
+						print ("\t\tPage '" . $metaData["section_name"] . "," . $metaData["page_name"] . "' by " . $metaData["author"] . " loaded.\r\n");
 						break;
 						
 					case "BLOCK":
@@ -87,7 +88,7 @@ foreach ( new RecursiveIteratorIterator( new RecursiveDirectoryIterator("./pages
 						$currentBlock->author = $metaData["author"];
 						$currentBlock->content = $scriptItem[2];
 						$contentData["blocks"][$currentBlock->name] = $currentBlock;
-						print ("Block '" . $metaData["block_name"] . "' by " . $metaData["author"] . " loaded.<br/>");
+						print ("\t\tBlock '" . $metaData["block_name"] . "' by " . $metaData["author"] . " loaded.\r\n");
 						break;
 				}
 			}  
@@ -96,10 +97,10 @@ foreach ( new RecursiveIteratorIterator( new RecursiveDirectoryIterator("./pages
 	else if ($fileInfo->getBasename() != $fileInfo->getBasename(".js"))
 	{
 		$javascriptIncludes = $javascriptIncludes . "\r\n" . file_get_contents($fileInfo->getPathname());
-		print ("Javascript file '" . $fileInfo->getBasename() . "' loaded.<br/>");
+		print ("\tJavascript file '" . $fileInfo->getBasename() . "' loaded.\r\n");
 	}
 }
 
-file_put_contents("jsIncludes.js", $javascriptIncludes);
-file_put_contents("contentData.json", json_encode($contentData));
+file_put_contents(trim($_SERVER['argv'][2], "\\") . "\\" . "includes.js", $javascriptIncludes);
+file_put_contents(trim($_SERVER['argv'][2], "\\") . "\\" . "contentData.json", json_encode($contentData));
 ?>
