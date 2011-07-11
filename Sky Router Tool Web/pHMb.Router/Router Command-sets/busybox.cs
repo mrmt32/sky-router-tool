@@ -26,7 +26,7 @@ namespace pHMb.Router.RouterCommandSets
         /// Gets the time in seconds since the router was last reset
         /// </summary>
         /// <returns>Time in seconds since last reset</returns>
-        protected double GetUptime()
+        protected virtual double GetUptime()
         {
             string result = _routerConnection.SendCommand("cat /proc/uptime");
             Match timesMatch = Regex.Match(result, "([0-9]*\\.[0-9]*) ([0-9]*\\.[0-9]*)");
@@ -38,7 +38,7 @@ namespace pHMb.Router.RouterCommandSets
         /// Gets the number of bytes transfered since the count last reached 2^32 bytes (it's an int32!)
         /// </summary>
         /// <returns>The number of bytes transfered, [0] is upload, [1] is download</returns>
-        protected uint[] GetBytesTransferred()
+        protected virtual uint[] GetBytesTransferred()
         {
             string result = _routerConnection.SendCommand("ifconfig ppp0");
             Match transferedMatch = Regex.Match(result, "RX bytes:([0-9]*).*TX bytes:([0-9]*)");
@@ -82,7 +82,7 @@ namespace pHMb.Router.RouterCommandSets
         }
 
 
-        protected string GetLanMacAddress()
+        protected virtual string GetLanMacAddress()
         {
             string result = _routerConnection.SendCommand("ifconfig ath0");
 
@@ -141,7 +141,7 @@ namespace pHMb.Router.RouterCommandSets
             return priority;
         }
 
-        protected List<RouterProcess> GetProcessList()
+        protected virtual List<RouterProcess> GetProcessList()
         {
             string psText = _routerConnection.SendCommand("ps -w");
             List<RouterProcess> processList = new List<RouterProcess>();
