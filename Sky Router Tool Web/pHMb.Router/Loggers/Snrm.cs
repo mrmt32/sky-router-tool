@@ -9,6 +9,7 @@ namespace pHMb.Router.Loggers
     public class Snrm : ILogger
     {
         private DateTime _lastUpdateTime;
+        private decimal[] _lastValues = { -1, -1 };
 
         private void InsertNull(SqlCeConnection databaseConnection)
         {
@@ -34,16 +35,27 @@ namespace pHMb.Router.Loggers
                 if (_lastUpdateTime > DateTime.Now - new TimeSpan(0, 10, 0))
                 {
                     ConnectionDetails connectionDetails = routerCommand.RouterInfo.ConnectionDetails;
+                    decimal UpMargin = connectionDetails.UpstreamSync.SnrMargin;
+                    decimal DownMargin = connectionDetails.DownstreamSync.SnrMargin;
 
-                    if (connectionDetails.Status.ToUpper() == "SHOWTIME")
+                    if (_lastValues[0] == -1)
+                    {
+                        _lastValues[0] = UpMargin;
+                        _lastValues[1] = DownMargin;
+                    }
+
+                    if (connectionDetails.Status.ToUpper() == "SHOWTIME" && (Math.Abs(UpMargin - _lastValues[0]) < 20) && (Math.Abs(DownMargin - _lastValues[1]) < 20))
                     {
                         string sqlQuery = string.Format("INSERT INTO Snrm (time, snrmUp, snrmDown) VALUES ('{0:MM/dd/yyyy HH:mm:ss}', {1:N1}, {2:N1})",
-                            DateTime.Now, connectionDetails.UpstreamSync.SnrMargin, connectionDetails.DownstreamSync.SnrMargin);
+                            DateTime.Now, UpMargin, DownMargin);
 
                         using (SqlCeCommand cmd = new SqlCeCommand(sqlQuery, databaseConnection))
                         {
                             cmd.ExecuteNonQuery();
                         }
+
+                        _lastValues[0] = UpMargin;
+                        _lastValues[1] = DownMargin;
                     }
                     else
                     {
