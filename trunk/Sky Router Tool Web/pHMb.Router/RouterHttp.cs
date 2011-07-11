@@ -146,7 +146,7 @@ namespace pHMb.Router
                     HttpWebRequest request = (HttpWebRequest)WebRequest.Create(commandUri);
 
                     request.Credentials = new NetworkCredential(Username, Password, "");
-                    request.Timeout = 10000;
+                    request.Timeout = 20000;
                     request.Method = "POST";
 
                     request.ContentLength = command.Length + 1;
