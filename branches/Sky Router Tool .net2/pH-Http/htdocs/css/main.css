@@ -1,0 +1,621 @@
+@charset "utf-8";
+/* v1.0 | 20080212 */
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	font-size: 100%;
+	vertical-align: baseline;
+	background: transparent;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+
+/* remember to define focus styles! */
+:focus {
+	outline: 0;
+}
+
+/* remember to highlight inserts somehow! */
+ins {
+	text-decoration: none;
+}
+del {
+	text-decoration: line-through;
+}
+
+/* tables still need 'cellspacing="0"' in the markup */
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+/*********************************************************************************/
+
+body.default {
+	/* Fix IE Bug */
+	text-align: center;
+	background-color: #E1E1E1;
+	margin-right: auto;
+	margin-left: auto;
+	text-align: center;
+	color: #FFF;
+	font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
+}
+
+
+/*
+ * General Text
+ * 
+ */
+
+p, label, a {
+	font-size: 0.8em;	
+	line-height: 1.5;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+p.warningText {
+	color: #e10000;
+}
+
+h1 {
+	color: #555;
+	text-align: left;
+	font-size: 1.2em;
+	font-weight: normal;
+}
+
+h2 {
+	width: 600px;
+	margin-top: 10px;
+	margin-bottom: 20px;
+	
+	font-size: 1.3em;
+	font-weight: normal;
+	color: #196b93;
+	border-bottom: solid 1px #aaa;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+}
+
+
+h3 {
+	margin: 10px 10px 7px 10px;
+	font-weight: normal;
+	text-align: center;
+}
+
+pre {
+	width: 650px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 10px;
+	border: 1px solid #aaa;
+	padding: 10px;
+	overflow: scroll;
+}
+
+/*
+ * Links
+ * 
+ */
+
+a:link {
+	color: #196b93;
+	text-decoration: none;
+}
+a:visited {
+	color: #196b93;
+	text-decoration: none;
+}
+a:hover {
+	color: #333;
+	text-decoration: underline;
+}
+
+a img {
+	border: none;
+}
+a:hover img {
+	opacity: 0.5;
+	/*filter:alpha(opacity=90); /* IE Compatibility --- unfortunatly doesnt seem to work with already transparent pngs */
+}
+
+/*
+ * The main container + shadow
+ *
+ */
+.mainpage {
+	background-image:  url('../images/drop-shadow-altcolour.png');
+	margin-left: auto;
+	margin-right: auto;
+	padding-right: 10px;
+	padding-left: 10px;
+	width: 980px;
+	height: 100%;
+}
+
+/*
+ * Header
+ *
+ */
+.header {
+	height: 100px;
+	width: 975px;
+	min-width: 600px;
+	background-color: #636C58;
+	padding-left: 5px;
+	position: relative;
+	background-image: url('../images/header.png');
+	border-bottom: 1px solid #777;
+}
+ 
+/*
+ * Menubar
+ *
+ */
+.menubar {
+	height: 30px;
+
+	position: absolute;
+	top: 57px;
+	left: 733px;
+	font-size: 0.9em;
+}
+
+a.current:visited, a.current:link {
+	color: #f2b94f;
+}
+
+.menubar a.current:visited, .menuBar a.current:link {
+	color: #f2b94f;
+}
+
+.mainMenu {
+	text-align: left;
+	float: left;
+
+	height: 30px;
+}
+
+.mainMenu li {
+	display: inline;
+	padding-right: 5px;
+	padding-left: 5px;
+	border-right: 1px solid #FFF;
+	padding-bottom: 2px;
+}
+
+.mainMenu .lastItem {
+	border: none;	
+}
+
+.rightMenu {
+	text-align: right;
+	float: right;
+	height: 30px;
+	position: relative;
+	width: 168px;
+}
+
+.menubar a:link {
+	color: #FFF;
+	text-decoration: none;
+}
+.menubar a:visited {
+	color: #FFF;
+	text-decoration: none;
+}
+.menubar a:hover {
+	color: #CCC;
+	text-decoration: underline;
+}
+
+/*
+ * Content Boxes + body + sidebar
+ *
+ */
+.body {
+	padding: 1px 0 1px 0;
+		color: #000;
+	background-color: #e8e4db;
+	text-align: left;
+	display: none;
+}
+
+.body img {
+	margin: 0px;
+	text-align: center;
+}
+
+#sidebar
+{
+	width: 200px;
+	float: left;
+}
+
+.contentBox.sideBar {
+	
+	width: 200px;
+	margin: 0 0 10px 5px;
+}
+
+.contentBox.sideBar ul {
+	padding: 0;
+	margin: 0;
+}
+
+.contentBox.sideBar li {
+	list-style-type: disc;
+	list-style-position: inside;
+	
+	margin: 5px 10px 5px 10px;
+}
+
+.contentBox.contentWithSideBar {
+	margin-left: 210px;
+	min-height: 500px;
+}
+
+.contentBox {
+	color: #000;
+	margin: 5px;
+	background-color: #FFF;
+	text-align: left;	
+	border: 1px solid #444;
+}
+
+.body p {
+	margin: 5px;
+	text-align: center;
+}
+
+.titleBar {
+	padding-bottom: 3px;
+	margin: 5px 5px 10px 4px;
+	border-bottom: 2px solid #aaa;
+	height: 20px;
+}
+
+.titleBar h1 {
+	width: 50px;
+	float: left;
+}
+
+.titleBar .refreshButton {
+	float: right;	
+	position: relative;
+	top: -2px;
+	width: 17px;
+}
+
+/*
+ * List item container, used for news items etc.
+ * 
+ */
+.listItemContainer{
+	padding: 10px;	
+}
+
+.listItemContainer li.listItem {
+	text-align: left;	
+	color: #444;
+	background-color: #FFF;
+	border: 1px solid #aaa;
+	overflow: hidden;
+	margin-bottom: 20px;
+	margin-top: 5px;
+	padding: 3px 3px 3px 3px;
+}
+
+.listItemContainer li img.mediaImage {
+	float: left;
+	width: 50px;
+	height: 50px;
+	margin-right: 10px;
+	border: 1px solid #536369;
+}
+
+.listItemContainer .listItemMenu {
+	font-size: 0.7em;
+	margin-top: 10px;
+}
+
+/*
+ * Graphs etc.
+ * 
+ */
+.graph {
+	width:650px;
+	height:400px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 20px;
+}
+
+.graphMenu 
+{
+	text-align: center;
+	margin: 10px;
+}
+
+.graphMenu p
+{
+	margin: 10px;
+}
+
+.graphMenu ul li
+{
+	display: inline;
+}
+
+.graphMenu ul li a
+{
+	/*border: 1px solid #aaa;*/
+	padding: 5px;
+}
+
+.graphMenu ul li a:hover
+{
+	/*border: 1px solid #aaa;*/
+	padding: 5px;
+	background-color: #aaa;
+}
+
+/*
+ * Other boxes
+ * 
+ */
+.loadingBox {
+	position: relative;
+	left: 900px;
+	width: 70px;
+	background-color: #F0EEE8;
+	border: 1px solid #444;
+	color: #000;
+	font-size: 0.9em;
+}
+
+.pageList {
+	display: inline;
+	padding-top: 5px;
+	margin-bottom: 5px;
+	border-top: 1px solid #999;
+}
+
+.pageList li {
+	display: inline;
+	margin: 0;
+	padding: 0;
+}
+
+.pageList li a {
+	border: 1px solid #2280dd;
+	padding: 1px 3px 1px 3px;
+	margin: 1px;
+	color: #2280dd;
+}
+
+.pageList li a:hover {
+	border: 1px solid #2280dd;
+	padding: 1px 3px 1px 3px;
+	margin: 1px;
+	color: #FFF;
+	background-color:  #2280dd;
+}
+
+.pageList li.currentPage {
+	border: 1px solid #2280dd;
+	padding: 1px 3px 1px 3px;
+	margin: 1px;
+	font-size: 0.8em;
+	color: #FFF;
+	background-color:  #2280dd;
+}
+
+.pageList li.disabledPrevNext {
+	border: 1px solid #AAA;
+	padding: 1px 3px 1px 3px;
+	margin: 1px;
+	font-size: 0.8em;
+	color: #AAA;
+}
+
+.quickButtons {
+	text-align: center;
+}
+
+/*
+ * Footer
+ *
+ */
+.footer {
+	height: 35px;
+	width: 960px;
+	text-align: left;
+	background-color: #636C58;
+	padding-left: 20px;
+	padding-top: 15px;
+	margin: 0;
+	border-top: 1px solid #777;
+	border-bottom: 1px solid #777;
+	background-image: url('../images/footer.png');	
+}
+
+/***************/
+/* Table Stuff */
+/***************/
+table
+{
+	margin-left: 5px;
+	margin-bottom: 20px;
+	margin-left: auto;
+    margin-right: auto;
+	border: solid 1px #0e2130;
+	text-align: left;
+}
+
+td, th
+{
+	padding: 3px 5px 3px 5px;
+	font-size: 0.8em;
+	border-right: solid 1px #0e2130;
+}
+
+.unit 
+{
+	font-size: 0.7em;
+}
+
+td[colspan="2"]
+{
+	text-align: center;
+}
+
+th
+{
+	font:bold 0.9em "Century Gothic","Trebuchet MS",Arial,Helvetica,sans-serif;
+	color:#66a3d3;
+}
+
+tr.selectable {
+	cursor: pointer;
+}
+
+tr.separator {
+	border-top: 1px solid #000;
+	border-bottom: 1px solid #000;
+}
+
+tr.separator td {
+	border: none;
+}
+
+tr:hover th, tr:hover td, tr.odd:hover th, tr.odd:hover td {
+	background-color: #83b5eb;
+}
+
+tr:hover th, tr.odd:hover th {
+	color: #FFF;
+}
+
+/* tr.odd td is used instead of just tr.odd as otherwise IE7 refuses to add the background... */
+tr.odd td, tr.odd th {
+	background-color: #E1E1E1;
+}
+
+tr th
+{
+    text-align: left;
+	/*border-right:  solid 1px #66a3d3;*/
+	border-right: solid 1px #0e2130;
+}
+
+thead tr th
+{
+    text-align: center;
+	border-bottom: solid 2px #66a3d3;
+	border-right: none;
+}
+
+/*
+ * Forms
+ * 
+ */
+.body fieldset {
+	width: 290px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	padding: 10px;
+	border: 1px solid #CCC;
+}
+
+.body fieldset.wide {
+	width: 600px;
+}
+
+.body fieldset p {
+	text-align: left;
+}
+
+.body fieldset p.submitButton {
+	text-align: right;
+}
+
+.body fieldset table {
+	margin-top:25px;
+}
+
+.body fieldset .sliderValue {
+	text-align: center;
+}
+
+tr.disabled {
+	color: #aaa;
+}
+
+input, select {
+	margin-left: 10px;
+}
+
+label {
+	text-align: right;
+	float: left;
+	display: block;
+	width: 110px;
+}
+
+/*
+ * Page Specific
+ * 
+ */
+.helpPage {
+	text-align: left;
+}
+
+.helpPage p {
+	text-align: left;
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+.helpPage li {
+	list-style: disc;
+	margin-left: 26px;
+}
+
+.helpPage h3 {
+	text-align: left;
+	margin-top: 30px;
+	color: #0000a0;
+}
+
+.helpPage table {
+	margin: 10px;
+}
