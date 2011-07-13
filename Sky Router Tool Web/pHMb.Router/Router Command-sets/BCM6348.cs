@@ -102,7 +102,9 @@ namespace pHMb.Router.RouterCommandSets
 
             // Get connection details from telnet
             string conDetailsText = _routerConnection.SendCommand("adslctl info --stats");
-            
+
+            string telnetTest = Regex.Match(conDetailsText, "([^\r]*)(\r?)\n").Groups[2].Value;
+
             details.PowerState = (PowerState)Enum.Parse(typeof(PowerState), Regex.Match(conDetailsText, "Power State:[\t ]*(.*?)\n").Groups[1].Value);
 
             details.Status = Regex.Match(conDetailsText, "Status:[\t ]*(.*?)(Retrain.*?)?\n").Groups[1].Value;
@@ -112,82 +114,166 @@ namespace pHMb.Router.RouterCommandSets
             {
                 try
                 {
-                    // Parse ADSL mode
-                    details.Mode = Regex.Match(conDetailsText, "Mode:\t*(.*)\n").Groups[1].Value;
+                    if (telnetTest == "\r")
+                    {
+                        // Parse ADSL mode
+                        details.Mode = Regex.Match(conDetailsText, "Mode: *(.*)\r\n").Groups[1].Value;
 
-                    // Parse Channel (interleaved/fast)
-                    details.Channel = Regex.Match(conDetailsText, "Channel:\t*([A-Za-z]*)\n").Groups[1].Value;
+                        // Parse Channel (interleaved/fast)
+                        details.Channel = Regex.Match(conDetailsText, "Channel: *([A-Za-z]*)\r\n").Groups[1].Value;
 
-                    // Parse SNR margins
-                    Match snrMatch = Regex.Match(conDetailsText, "SNR \\(dB\\):\t(-?[0-9]*\\.[0-9]*)\t\t(-?[0-9]*\\.[0-9]*)\n");
-                    details.DownstreamSync.SnrMargin = decimal.Parse(snrMatch.Groups[1].Value);
-                    details.UpstreamSync.SnrMargin = decimal.Parse(snrMatch.Groups[2].Value);
+                        // Parse SNR margins
+                        Match snrMatch = Regex.Match(conDetailsText, "SNR \\(dB\\): *([0-9]*\\.[0-9]*) *([0-9]*\\.[0-9]*)\r\n");
+                        details.DownstreamSync.SnrMargin = decimal.Parse(snrMatch.Groups[1].Value);
+                        details.UpstreamSync.SnrMargin = decimal.Parse(snrMatch.Groups[2].Value);
 
-                    // Parse Attenuations
-                    Match attnMatch = Regex.Match(conDetailsText, "Attn\\(dB\\):\t(-?[0-9]*\\.[0-9]*)\t\t(-?[0-9]*\\.[0-9]*)\n");
-                    details.DownstreamSync.Attenuation = decimal.Parse(attnMatch.Groups[1].Value);
-                    details.UpstreamSync.Attenuation = decimal.Parse(attnMatch.Groups[2].Value);
+                        // Parse Attenuations
+                        Match attnMatch = Regex.Match(conDetailsText, "Attn\\(dB\\): *([0-9]*\\.[0-9]*) *([0-9]*\\.[0-9]*)\r\n");
+                        details.DownstreamSync.Attenuation = decimal.Parse(attnMatch.Groups[1].Value);
+                        details.UpstreamSync.Attenuation = decimal.Parse(attnMatch.Groups[2].Value);
 
-                    // Parse Power
-                    Match powerMatch = Regex.Match(conDetailsText, "Pwr\\(dBm\\):\t(-?[0-9]*\\.[0-9]*)\t\t(-?[0-9]*\\.[0-9]*)\n");
-                    details.DownstreamSync.Power = decimal.Parse(powerMatch.Groups[1].Value);
-                    details.UpstreamSync.Power = decimal.Parse(powerMatch.Groups[2].Value);
+                        // Parse Power
+                        Match powerMatch = Regex.Match(conDetailsText, "Pwr\\(dBm\\): *([0-9]*\\.[0-9]*) *([0-9]*\\.[0-9]*)\r\n");
+                        details.DownstreamSync.Power = decimal.Parse(powerMatch.Groups[1].Value);
+                        details.UpstreamSync.Power = decimal.Parse(powerMatch.Groups[2].Value);
 
-                    // Parse max attainable rate (this is predicted by the router)
-                    Match maxRateMatch = Regex.Match(conDetailsText, "Max\\(Kbps\\):\t([0-9]*)\t\t([0-9]*)\n");
-                    details.DownstreamSync.MaxAttainableRate = int.Parse(maxRateMatch.Groups[1].Value);
-                    details.UpstreamSync.MaxAttainableRate = int.Parse(maxRateMatch.Groups[2].Value);
+                        // Parse max attainable rate (this is predicted by the router)
+                        Match maxRateMatch = Regex.Match(conDetailsText, "Max\\(Kbps\\): *([0-9]*) *([0-9]*)\r\n");
+                        details.DownstreamSync.MaxAttainableRate = int.Parse(maxRateMatch.Groups[1].Value);
+                        details.UpstreamSync.MaxAttainableRate = int.Parse(maxRateMatch.Groups[2].Value);
 
-                    // Parse sync rate
-                    Match syncRateMatch = Regex.Match(conDetailsText, "Rate \\(Kbps\\):\t([0-9]*)\t\t([0-9]*)\n");
-                    details.DownstreamSync.SyncRate = int.Parse(syncRateMatch.Groups[1].Value);
-                    details.UpstreamSync.SyncRate = int.Parse(syncRateMatch.Groups[2].Value);
+                        // Parse sync rate
+                        Match syncRateMatch = Regex.Match(conDetailsText, "Rate \\(Kbps\\): *([0-9]*) *([0-9]*)\r\n");
+                        details.DownstreamSync.SyncRate = int.Parse(syncRateMatch.Groups[1].Value);
+                        details.UpstreamSync.SyncRate = int.Parse(syncRateMatch.Groups[2].Value);
 
-                    // Parse Errors
-                    Match errorsMatch = Regex.Match(conDetailsText, "CRC = ([0-9]*)\nLOS = ([0-9]*)\nLOF = ([0-9]*)\nES  = ([0-9]*)\n");
+                        // Parse Errors
+                        Match errorsMatch = Regex.Match(conDetailsText, "CRC = ([0-9]*)\r\nLOS = ([0-9]*)\r\nLOF = ([0-9]*)\r\nES  = ([0-9]*)\r\n");
 
-                    // Total errors:
-                    details.Errors.Total.Crc = int.Parse(errorsMatch.Groups[1].Value);
-                    details.Errors.Total.Los = int.Parse(errorsMatch.Groups[2].Value);
-                    details.Errors.Total.Lof = int.Parse(errorsMatch.Groups[3].Value);
-                    details.Errors.Total.Es = int.Parse(errorsMatch.Groups[4].Value);
+                        // Total errors:
+                        details.Errors.Total.Crc = int.Parse(errorsMatch.Groups[1].Value);
+                        details.Errors.Total.Los = int.Parse(errorsMatch.Groups[2].Value);
+                        details.Errors.Total.Lof = int.Parse(errorsMatch.Groups[3].Value);
+                        details.Errors.Total.Es = int.Parse(errorsMatch.Groups[4].Value);
 
-                    // Errors in last day:
-                    errorsMatch = errorsMatch.NextMatch();
-                    details.Errors.LatestDay.Crc = int.Parse(errorsMatch.Groups[1].Value);
-                    details.Errors.LatestDay.Los = int.Parse(errorsMatch.Groups[2].Value);
-                    details.Errors.LatestDay.Lof = int.Parse(errorsMatch.Groups[3].Value);
-                    details.Errors.LatestDay.Es = int.Parse(errorsMatch.Groups[4].Value);
+                        // Errors in last day:
+                        errorsMatch = errorsMatch.NextMatch();
+                        details.Errors.LatestDay.Crc = int.Parse(errorsMatch.Groups[1].Value);
+                        details.Errors.LatestDay.Los = int.Parse(errorsMatch.Groups[2].Value);
+                        details.Errors.LatestDay.Lof = int.Parse(errorsMatch.Groups[3].Value);
+                        details.Errors.LatestDay.Es = int.Parse(errorsMatch.Groups[4].Value);
 
-                    // Current errors:
-                    errorsMatch = errorsMatch.NextMatch();
-                    details.Errors.Current.Crc = int.Parse(errorsMatch.Groups[1].Value);
-                    details.Errors.Current.Los = int.Parse(errorsMatch.Groups[2].Value);
-                    details.Errors.Current.Lof = int.Parse(errorsMatch.Groups[3].Value);
-                    details.Errors.Current.Es = int.Parse(errorsMatch.Groups[4].Value);
+                        // Current errors:
+                        errorsMatch = errorsMatch.NextMatch();
+                        details.Errors.Current.Crc = int.Parse(errorsMatch.Groups[1].Value);
+                        details.Errors.Current.Los = int.Parse(errorsMatch.Groups[2].Value);
+                        details.Errors.Current.Lof = int.Parse(errorsMatch.Groups[3].Value);
+                        details.Errors.Current.Es = int.Parse(errorsMatch.Groups[4].Value);
 
-                    // -30min to -15min
-                    errorsMatch = errorsMatch.NextMatch();
-                    errorsMatch = errorsMatch.NextMatch();
-                    errorsMatch = errorsMatch.NextMatch();
-                    details.Errors.M30Min.Crc = int.Parse(errorsMatch.Groups[1].Value);
-                    details.Errors.M30Min.Los = int.Parse(errorsMatch.Groups[2].Value);
-                    details.Errors.M30Min.Lof = int.Parse(errorsMatch.Groups[3].Value);
-                    details.Errors.M30Min.Es = int.Parse(errorsMatch.Groups[4].Value);
+                        // -30min to -15min
+                        errorsMatch = errorsMatch.NextMatch();
+                        errorsMatch = errorsMatch.NextMatch();
+                        errorsMatch = errorsMatch.NextMatch();
+                        details.Errors.M30Min.Crc = int.Parse(errorsMatch.Groups[1].Value);
+                        details.Errors.M30Min.Los = int.Parse(errorsMatch.Groups[2].Value);
+                        details.Errors.M30Min.Lof = int.Parse(errorsMatch.Groups[3].Value);
+                        details.Errors.M30Min.Es = int.Parse(errorsMatch.Groups[4].Value);
 
-                    // -45min to -30min
-                    errorsMatch = errorsMatch.NextMatch();
-                    details.Errors.M45Min.Crc = int.Parse(errorsMatch.Groups[1].Value);
-                    details.Errors.M45Min.Los = int.Parse(errorsMatch.Groups[2].Value);
-                    details.Errors.M45Min.Lof = int.Parse(errorsMatch.Groups[3].Value);
-                    details.Errors.M45Min.Es = int.Parse(errorsMatch.Groups[4].Value);
+                        // -45min to -30min
+                        errorsMatch = errorsMatch.NextMatch();
+                        details.Errors.M45Min.Crc = int.Parse(errorsMatch.Groups[1].Value);
+                        details.Errors.M45Min.Los = int.Parse(errorsMatch.Groups[2].Value);
+                        details.Errors.M45Min.Lof = int.Parse(errorsMatch.Groups[3].Value);
+                        details.Errors.M45Min.Es = int.Parse(errorsMatch.Groups[4].Value);
 
-                    // -60min to -45min
-                    errorsMatch = errorsMatch.NextMatch();
-                    details.Errors.M60Min.Crc = int.Parse(errorsMatch.Groups[1].Value);
-                    details.Errors.M60Min.Los = int.Parse(errorsMatch.Groups[2].Value);
-                    details.Errors.M60Min.Lof = int.Parse(errorsMatch.Groups[3].Value);
-                    details.Errors.M60Min.Es = int.Parse(errorsMatch.Groups[4].Value);
+                        // -60min to -45min
+                        errorsMatch = errorsMatch.NextMatch();
+                        details.Errors.M60Min.Crc = int.Parse(errorsMatch.Groups[1].Value);
+                        details.Errors.M60Min.Los = int.Parse(errorsMatch.Groups[2].Value);
+                        details.Errors.M60Min.Lof = int.Parse(errorsMatch.Groups[3].Value);
+                        details.Errors.M60Min.Es = int.Parse(errorsMatch.Groups[4].Value);
+                    }
+                    else
+                    {
+
+                        // Parse ADSL mode
+                        details.Mode = Regex.Match(conDetailsText, "Mode:\t*(.*)\n").Groups[1].Value;
+
+                        // Parse Channel (interleaved/fast)
+                        details.Channel = Regex.Match(conDetailsText, "Channel:\t*([A-Za-z]*)\n").Groups[1].Value;
+
+                        // Parse SNR margins
+                        Match snrMatch = Regex.Match(conDetailsText, "SNR \\(dB\\):\t(-?[0-9]*\\.[0-9]*)\t\t(-?[0-9]*\\.[0-9]*)\n");
+                        details.DownstreamSync.SnrMargin = decimal.Parse(snrMatch.Groups[1].Value);
+                        details.UpstreamSync.SnrMargin = decimal.Parse(snrMatch.Groups[2].Value);
+
+                        // Parse Attenuations
+                        Match attnMatch = Regex.Match(conDetailsText, "Attn\\(dB\\):\t(-?[0-9]*\\.[0-9]*)\t\t(-?[0-9]*\\.[0-9]*)\n");
+                        details.DownstreamSync.Attenuation = decimal.Parse(attnMatch.Groups[1].Value);
+                        details.UpstreamSync.Attenuation = decimal.Parse(attnMatch.Groups[2].Value);
+
+                        // Parse Power
+                        Match powerMatch = Regex.Match(conDetailsText, "Pwr\\(dBm\\):\t(-?[0-9]*\\.[0-9]*)\t\t(-?[0-9]*\\.[0-9]*)\n");
+                        details.DownstreamSync.Power = decimal.Parse(powerMatch.Groups[1].Value);
+                        details.UpstreamSync.Power = decimal.Parse(powerMatch.Groups[2].Value);
+
+                        // Parse max attainable rate (this is predicted by the router)
+                        Match maxRateMatch = Regex.Match(conDetailsText, "Max\\(Kbps\\):\t([0-9]*)\t\t([0-9]*)\n");
+                        details.DownstreamSync.MaxAttainableRate = int.Parse(maxRateMatch.Groups[1].Value);
+                        details.UpstreamSync.MaxAttainableRate = int.Parse(maxRateMatch.Groups[2].Value);
+
+                        // Parse sync rate
+                        Match syncRateMatch = Regex.Match(conDetailsText, "Rate \\(Kbps\\):\t([0-9]*)\t\t([0-9]*)\n");
+                        details.DownstreamSync.SyncRate = int.Parse(syncRateMatch.Groups[1].Value);
+                        details.UpstreamSync.SyncRate = int.Parse(syncRateMatch.Groups[2].Value);
+
+                        // Parse Errors
+                        Match errorsMatch = Regex.Match(conDetailsText, "CRC = ([0-9]*)\nLOS = ([0-9]*)\nLOF = ([0-9]*)\nES  = ([0-9]*)\n");
+
+                        // Total errors:
+                        details.Errors.Total.Crc = int.Parse(errorsMatch.Groups[1].Value);
+                        details.Errors.Total.Los = int.Parse(errorsMatch.Groups[2].Value);
+                        details.Errors.Total.Lof = int.Parse(errorsMatch.Groups[3].Value);
+                        details.Errors.Total.Es = int.Parse(errorsMatch.Groups[4].Value);
+
+                        // Errors in last day:
+                        errorsMatch = errorsMatch.NextMatch();
+                        details.Errors.LatestDay.Crc = int.Parse(errorsMatch.Groups[1].Value);
+                        details.Errors.LatestDay.Los = int.Parse(errorsMatch.Groups[2].Value);
+                        details.Errors.LatestDay.Lof = int.Parse(errorsMatch.Groups[3].Value);
+                        details.Errors.LatestDay.Es = int.Parse(errorsMatch.Groups[4].Value);
+
+                        // Current errors:
+                        errorsMatch = errorsMatch.NextMatch();
+                        details.Errors.Current.Crc = int.Parse(errorsMatch.Groups[1].Value);
+                        details.Errors.Current.Los = int.Parse(errorsMatch.Groups[2].Value);
+                        details.Errors.Current.Lof = int.Parse(errorsMatch.Groups[3].Value);
+                        details.Errors.Current.Es = int.Parse(errorsMatch.Groups[4].Value);
+
+                        // -30min to -15min
+                        errorsMatch = errorsMatch.NextMatch();
+                        errorsMatch = errorsMatch.NextMatch();
+                        errorsMatch = errorsMatch.NextMatch();
+                        details.Errors.M30Min.Crc = int.Parse(errorsMatch.Groups[1].Value);
+                        details.Errors.M30Min.Los = int.Parse(errorsMatch.Groups[2].Value);
+                        details.Errors.M30Min.Lof = int.Parse(errorsMatch.Groups[3].Value);
+                        details.Errors.M30Min.Es = int.Parse(errorsMatch.Groups[4].Value);
+
+                        // -45min to -30min
+                        errorsMatch = errorsMatch.NextMatch();
+                        details.Errors.M45Min.Crc = int.Parse(errorsMatch.Groups[1].Value);
+                        details.Errors.M45Min.Los = int.Parse(errorsMatch.Groups[2].Value);
+                        details.Errors.M45Min.Lof = int.Parse(errorsMatch.Groups[3].Value);
+                        details.Errors.M45Min.Es = int.Parse(errorsMatch.Groups[4].Value);
+
+                        // -60min to -45min
+                        errorsMatch = errorsMatch.NextMatch();
+                        details.Errors.M60Min.Crc = int.Parse(errorsMatch.Groups[1].Value);
+                        details.Errors.M60Min.Los = int.Parse(errorsMatch.Groups[2].Value);
+                        details.Errors.M60Min.Lof = int.Parse(errorsMatch.Groups[3].Value);
+                        details.Errors.M60Min.Es = int.Parse(errorsMatch.Groups[4].Value);
+
+                    }
                 }
                 catch (FormatException)
                 {
@@ -195,6 +281,7 @@ namespace pHMb.Router.RouterCommandSets
                 }
             }
             return details;
+            
         }
         #endregion
 
