@@ -93,6 +93,7 @@ namespace pHMb.Router
         public string HttpServerUsername { get; set; }
         public bool Connected { get; private set; }
         public bool SkyCompatibilityMode { get; set; }
+        public bool UseLoader { get; set; }
         #endregion
 
         #region Public Events
@@ -118,7 +119,7 @@ namespace pHMb.Router
         #endregion
 
         #region Public Methods
-        public RouterHttp(string username, string password, string host, int httpServerPort, string httpServerUsername, string httpServerPassword, bool skyCompatibilityMode)
+        public RouterHttp(string username, string password, string host, int httpServerPort, string httpServerUsername, string httpServerPassword, bool skyCompatibilityMode, bool useLoader = true)
         {
             Username = username;
             Password = password;
@@ -127,6 +128,7 @@ namespace pHMb.Router
             HttpServerUsername = httpServerUsername;
             HttpServerPassword = httpServerPassword;
             SkyCompatibilityMode = skyCompatibilityMode;
+            UseLoader = useLoader;
         }
 
         public string SendCommand(string command)
@@ -183,7 +185,7 @@ namespace pHMb.Router
                         OnConnectionError(ex, false);
                     }
 
-                    UploadLoaderFile();
+                    if (UseLoader) UploadLoaderFile();
 
                     if (i > 2)
                     {
