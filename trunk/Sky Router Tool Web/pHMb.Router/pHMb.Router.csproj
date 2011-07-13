@@ -99,6 +99,7 @@
     <Compile Include="Loggers\Errors.cs" />
     <Compile Include="Router Command-sets\BCM6348.cs" />
     <Compile Include="Router Command-sets\busybox.cs" />
+    <Compile Include="Router Command-sets\FAST2504_http.cs" />
     <Compile Include="Router Command-sets\DG834GT.cs" />
     <Compile Include="Exceptions\LoggerException.cs" />
     <Compile Include="Interfaces\ILogger.cs" />
