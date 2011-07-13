@@ -9,7 +9,12 @@ display_order = '20'
 <div class='contentBox sideBar'>
 	<ul>
 		<h3>Basic</h3>
-		<li><a href='#tools,speed_test'>Speed Test</a></li>
+        <&javascript>
+			if (SrtSettings.RouterModel != "F_ST2504")
+			{
+                output = "<li><a href='#tools,speed_test'>Speed Test</a></li>";
+            }
+        <&/javascript>
 		<li><a href='#tools,ping'>Ping</a></li>
 		<li><a href='#tools,sky_password'>Calculate Sky Password</a></li>
 	</ul>
