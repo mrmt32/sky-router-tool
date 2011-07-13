@@ -162,11 +162,18 @@ namespace pHMb.Router
                 catch
                 {
                     Connected = false;
-                    _tcpClient.Close();
+                    if (_tcpClient != null) _tcpClient.Close();
                     Thread.Sleep(10000);
                     Connect();
                 }
             }
+            while (Connected)
+            {
+                Thread.Sleep(10000);
+            }
+            Console.WriteLine("Telent connection lost, reconnecting");
+            _tcpClient.Close();
+            Connect();
         }
 
         /// <summary>
@@ -200,7 +207,28 @@ namespace pHMb.Router
                 _telnetWriter.WriteLine(command + "; echo \"&&TERMINATE&&\"");
                 _telnetWriter.Flush();
 
-                while (_tcpClient.Available < command.Length + "; echo \"&&TERMINATE&&\"\r\n".Length) { }
+                byte[] tmp = new byte[1];
+                while (_tcpClient.Available < command.Length + "; echo \"&&TERMINATE&&\"\r\n".Length) 
+                {
+                    // Check we havent lost connection or we could be stuck here forever!
+
+                    try
+                    {
+                        _tcpClient.Client.Blocking = false;
+                        _tcpClient.Client.Send(tmp, 0, 0, SocketFlags.None);
+                    }
+                    catch (SocketException e)
+                    {
+                        Connected = false;
+                        throw e;
+                    }
+                    finally
+                    {
+                        _tcpClient.Client.Blocking = true;
+                    }
+
+                    Thread.Sleep(100);
+                }
 
                 char[] discarded = new char[command.Length + "; echo \"&&TERMINATE&&\"\r\n".Length];
                 _telnetReader.Read(discarded, 0, command.Length + "; echo \"&&TERMINATE&&\"\r\n".Length);

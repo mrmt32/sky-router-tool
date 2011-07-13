@@ -15,19 +15,13 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_0A1186E8163901D7BD8AE18B7665409F"
-        "OwnerKey" = "8:_511BCF935B0E491FB9B8811C85CBA14A"
+        "MsmKey" = "8:_088E3F9BFB32E1D4AA1B9EC774027C57"
+        "OwnerKey" = "8:_5353864A3D1BE96965597C61D4BF0DD4"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_32814AAF2F9914A13F0633DDACBBEBA1"
-        "OwnerKey" = "8:_0A1186E8163901D7BD8AE18B7665409F"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_32814AAF2F9914A13F0633DDACBBEBA1"
+        "MsmKey" = "8:_088E3F9BFB32E1D4AA1B9EC774027C57"
         "OwnerKey" = "8:_511BCF935B0E491FB9B8811C85CBA14A"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -39,14 +33,8 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_7BB5BED3BC4298EC1C8BF20A4AC672BC"
+        "MsmKey" = "8:_5353864A3D1BE96965597C61D4BF0DD4"
         "OwnerKey" = "8:_511BCF935B0E491FB9B8811C85CBA14A"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_7BB5BED3BC4298EC1C8BF20A4AC672BC"
-        "OwnerKey" = "8:_0A1186E8163901D7BD8AE18B7665409F"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -57,13 +45,25 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_B164E2D53B3F4466E0823A5BA2616B5C"
-        "OwnerKey" = "8:_32814AAF2F9914A13F0633DDACBBEBA1"
+        "MsmKey" = "8:_8951F8D753C0D536343BF89A2E472A0E"
+        "OwnerKey" = "8:_511BCF935B0E491FB9B8811C85CBA14A"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_B164E2D53B3F4466E0823A5BA2616B5C"
+        "MsmKey" = "8:_8951F8D753C0D536343BF89A2E472A0E"
+        "OwnerKey" = "8:_5353864A3D1BE96965597C61D4BF0DD4"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D96A951F2B808A74E2885B072BC3DBAB"
+        "OwnerKey" = "8:_088E3F9BFB32E1D4AA1B9EC774027C57"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D96A951F2B808A74E2885B072BC3DBAB"
         "OwnerKey" = "8:_511BCF935B0E491FB9B8811C85CBA14A"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -76,25 +76,25 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_0A1186E8163901D7BD8AE18B7665409F"
+        "OwnerKey" = "8:_5353864A3D1BE96965597C61D4BF0DD4"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_32814AAF2F9914A13F0633DDACBBEBA1"
+        "OwnerKey" = "8:_088E3F9BFB32E1D4AA1B9EC774027C57"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_B164E2D53B3F4466E0823A5BA2616B5C"
+        "OwnerKey" = "8:_D96A951F2B808A74E2885B072BC3DBAB"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_7BB5BED3BC4298EC1C8BF20A4AC672BC"
+        "OwnerKey" = "8:_8951F8D753C0D536343BF89A2E472A0E"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -218,7 +218,7 @@
                 {
                 "Name" = "8:.NET Framework"
                 "Message" = "8:[VSDNETMSG]"
-                "Version" = "8:3.5.21022"
+                "FrameworkVersion" = "8:3.5.21022"
                 "AllowLaterVersions" = "11:FALSE"
                 "InstallUrl" = "8:http://go.microsoft.com/fwlink/?LinkId=76617"
                 }
@@ -226,39 +226,18 @@
         }
         "File"
         {
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_0A1186E8163901D7BD8AE18B7665409F"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:pH-Http, Version=1.0.6.0, Culture=neutral, processorArchitecture=x86"
-                "ScatterAssemblies"
-                {
-                }
-            "SourcePath" = "8:pH-Http.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_3483FBA0AFA745618F5C3657FC0AF257"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_32814AAF2F9914A13F0633DDACBBEBA1"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_088E3F9BFB32E1D4AA1B9EC774027C57"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:pHMb.Router, Version=1.0.6.0, Culture=neutral, processorArchitecture=x86"
                 "ScatterAssemblies"
                 {
+                    "_088E3F9BFB32E1D4AA1B9EC774027C57"
+                    {
+                    "Name" = "8:pHMb.Router.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:pHMb.Router.dll"
             "TargetName" = "8:"
@@ -278,20 +257,20 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_7BB5BED3BC4298EC1C8BF20A4AC672BC"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_5353864A3D1BE96965597C61D4BF0DD4"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Newtonsoft.Json, Version=3.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:pHMb.pH-Http, Version=1.0.6.0, Culture=neutral, processorArchitecture=x86"
                 "ScatterAssemblies"
                 {
-                    "_7BB5BED3BC4298EC1C8BF20A4AC672BC"
+                    "_5353864A3D1BE96965597C61D4BF0DD4"
                     {
-                    "Name" = "8:Newtonsoft.Json.dll"
+                    "Name" = "8:pHMb.pH-Http.dll"
                     "Attributes" = "3:512"
                     }
                 }
-            "SourcePath" = "8:Newtonsoft.Json.dll"
+            "SourcePath" = "8:pHMb.pH-Http.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_3483FBA0AFA745618F5C3657FC0AF257"
@@ -329,13 +308,49 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_B164E2D53B3F4466E0823A5BA2616B5C"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_8951F8D753C0D536343BF89A2E472A0E"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:Newtonsoft.Json, Version=3.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_8951F8D753C0D536343BF89A2E472A0E"
+                    {
+                    "Name" = "8:Newtonsoft.Json.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:Newtonsoft.Json.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_3483FBA0AFA745618F5C3657FC0AF257"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_D96A951F2B808A74E2885B072BC3DBAB"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:System.Data.SqlServerCe, Version=3.5.1.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_D96A951F2B808A74E2885B072BC3DBAB"
+                    {
+                    "Name" = "8:System.Data.SqlServerCe.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Data.SqlServerCe.dll"
             "TargetName" = "8:"
@@ -455,14 +470,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Sky Router Tool"
-        "ProductCode" = "8:{6BCD308D-F307-46CF-AA26-FF2A5C23A7EE}"
-        "PackageCode" = "8:{B20465BE-50E8-46FF-9010-E1D16B66ED02}"
+        "ProductCode" = "8:{38EB888A-FCC0-461C-887D-BAEBF04034EB}"
+        "PackageCode" = "8:{F7E1FB4C-3308-4CF7-9478-D51E3A5474AE}"
         "UpgradeCode" = "8:{57C4BA5D-6641-43AA-A528-E9725E52B926}"
+        "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.0.6"
+        "ProductVersion" = "8:1.1.0"
         "Manufacturer" = "8:pH-Mb"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:mailto:mrmt32@gmail.com"
@@ -471,7 +487,7 @@
         "ARPCONTACT" = "8:mrmt32"
         "Keywords" = "8:"
         "ARPCOMMENTS" = "8:"
-        "ARPURLINFOABOUT" = "8:"
+        "ARPURLINFOABOUT" = "8:http://www.ph-mb.com"
         "ARPPRODUCTICON" = "8:_81ECFD0E13E4463ABBA4306A87B33DB6"
         "ARPIconIndex" = "3:0"
         "SearchPath" = "8:"
@@ -1032,7 +1048,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_511BCF935B0E491FB9B8811C85CBA14A"
             {
-            "SourcePath" = "8:..\\Sky Router Tool Web\\obj\\x86\\Release\\Sky Router Tool Web.exe"
+            "SourcePath" = "8:..\\Sky Router Tool Web\\obj\\x86\\Debug\\Sky Router Tool Web.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_3483FBA0AFA745618F5C3657FC0AF257"

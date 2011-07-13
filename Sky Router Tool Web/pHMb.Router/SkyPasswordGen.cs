@@ -107,6 +107,22 @@ namespace pHMb.Router
             };
             return channelArray[hash[15] % 3];
         }
+
+        public static string SagemTest(string inputString)
+        {
+            // MD5 of some combination of base mac (lowercase without :) and wifi key, maybe some other constants?
+            // This is then base64 encoded, first 15 chars is password
+
+            MD5CryptoServiceProvider md5Crypt = new MD5CryptoServiceProvider();
+            byte[] bInput = Encoding.ASCII.GetBytes(inputString);
+            byte[] inputMd5 = md5Crypt.ComputeHash(bInput);
+
+            ToBase64Transform base64 = new ToBase64Transform();
+            byte[] md5Base64 = new byte[24];
+            base64.TransformBlock(inputMd5, 0, inputMd5.Length, md5Base64, 0);
+
+            return Encoding.ASCII.GetString(md5Base64, 0, md5Base64.Length);
+        }
     }
 
     public class SkyDetails

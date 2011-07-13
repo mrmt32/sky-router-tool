@@ -218,10 +218,10 @@ namespace pHMb.Router.RouterCommandSets
         {
             RouterProcessDetailed process = new RouterProcessDetailed();
 
-            string psText = _routerConnection.SendCommand(string.Format("cat /proc/{0:G}/cmdline; echo @\\\\$@; cat /proc/{0:G}/environ; echo @\\\\$@; cat /proc/{0:G}/status", pid)).Replace("\0", " ");
+            string psText = _routerConnection.SendCommand(string.Format("cat /proc/{0:G}/cmdline; echo @separate@; cat /proc/{0:G}/environ; echo @separate@; cat /proc/{0:G}/status", pid)).Replace("\0", " ");
 
 
-            process.CommandLine = Regex.Match(psText, "(.*?)@\\$@").Groups[1].Value;
+            process.CommandLine = Regex.Match(psText, "(.*?)@separate@").Groups[1].Value;
 
             if (Regex.Match(process.CommandLine, "cat:(.*)").Success)
             {
@@ -233,7 +233,7 @@ namespace pHMb.Router.RouterCommandSets
                 // Parse environment variables
                 process.Environment = new Dictionary<string, string>();
 
-                string[] envList = Regex.Match(psText, Regex.Escape(process.CommandLine) + "@\\$@\n(.*)@\\$@").Groups[1].Value.Split(' ');
+                string[] envList = Regex.Match(psText, Regex.Escape(process.CommandLine) + "@separate@\n(.*)@separate@").Groups[1].Value.Split(' ');
                 foreach (string env in envList)
                 {
                     string[] envKvp = env.Split('=');
