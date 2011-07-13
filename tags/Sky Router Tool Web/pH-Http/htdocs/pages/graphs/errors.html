@@ -1,0 +1,160 @@
+<&contentdata 
+section_name = 'graphs'
+page_name = 'errors'
+author = 'mrmt32'
+type = 'page'
+>
+	<h2 id='pageTitle'>ADSL Errors</h2>
+	
+	<$$graph_menu_block:{pagename: "errors"}>
+	
+	<div id='errors_graph' class='graph'>
+		
+	<$$loading_text_block:{}>
+		
+	<&javascript delayed='true'>
+		var startTime;
+		var endTime;
+		var timeFormat;
+		
+		var times = pHMb.Graphing.ChangeTimeSpan(parameters.type, "Errors");
+		
+		SendCommandToServer({action:'get_value', type:'log', name:'Errors', startTime:times.startTime, endTime:times.endTime}, function(jsonResponse)
+		{
+			if (jsonResponse.isError)
+			{
+				$("#errors_graph").html(jsonResponse.ErrorString);
+			}
+			else
+			{	
+				// Lets process the rediculous amount of data!
+				// Note that the returned data is sorted descending by date (so newest is first)
+				
+				var crcErrorCurve = {label: "CRC", data: new Array()};
+				var	losErrorCurve = {label: "LOS", data: new Array()};
+				var lofErrorCurve = {label: "LOF", data: new Array()};
+				var esErrorCurve = {label: "ES", data: new Array()};
+				var noDataCurve = {label: "Downtime", data: new Array()};
+				
+				var i = 0;
+				var errCount = 0;
+				var lastStartTime;
+				for (logItemId in jsonResponse.ReturnData)
+				{
+					var logItem = jsonResponse.ReturnData[logItemId];		
+					var startTime = logItem.startTime.getTime() - logItem.startTime.getTimezoneOffset() * 60 * 1000;
+					var endTime = logItem.endTime.getTime() - logItem.endTime.getTimezoneOffset() * 60 * 1000;
+					
+					// Check to see if there was any down time inbetween the last entry and this one:
+					if (isset(lastStartTime) && lastStartTime - endTime > 1000 * 60)
+					{
+						noDataCurve.data[errCount] = [lastStartTime, 100];
+						crcErrorCurve.data[i] = [lastStartTime, null];
+						losErrorCurve.data[i] = [lastStartTime, null];
+						lofErrorCurve.data[i] = [lastStartTime, null];
+						esErrorCurve.data[i] = [lastStartTime, null];
+						i++;
+						errCount++;
+						
+						noDataCurve.data[errCount] = [endTime, 100];
+						crcErrorCurve.data[i] = [endTime, null];
+						losErrorCurve.data[i] = [endTime, null];
+						lofErrorCurve.data[i] = [endTime, null];
+						esErrorCurve.data[i] = [endTime, null];
+						i++;
+						errCount++;
+					}
+					
+	
+					lastStartTime = startTime;
+									
+					// Calculate error rate
+					var crcRate = (logItem.crcErrors / 1024) / ((endTime - startTime) / 1000)
+					var losRate = (logItem.losErrors / 1024) / ((endTime - startTime) / 1000)
+					var lofRate = (logItem.lofErrors / 1024) / ((endTime - startTime) / 1000)
+					var esRate = (logItem.erroredSeconds / 1024) / ((endTime - startTime) / 1000)
+	
+					crcErrorCurve.data[i] = [endTime, crcRate];
+					losErrorCurve.data[i] = [endTime, losRate];
+					lofErrorCurve.data[i] = [endTime, lofRate];
+					esErrorCurve.data[i] = [endTime, esRate];
+					i++;
+					
+					crcErrorCurve.data[i] = [startTime, crcRate];
+					losErrorCurve.data[i] = [startTime, losRate];
+					lofErrorCurve.data[i] = [startTime, lofRate];
+					esErrorCurve.data[i] = [startTime, esRate];
+					i++;
+
+					if ( !isset(logItem.crcErrors) )
+					{
+						noDataCurve.data[errCount] = [endTime, 100];
+						errCount++;
+						noDataCurve.data[errCount] = [startTime, 100];
+						errCount++;
+					}
+					else
+					{
+						noDataCurve.data[errCount] = [endTime, 0];
+						errCount++;
+						noDataCurve.data[errCount] = [startTime, 0];
+						errCount++;
+					}
+				}
+				
+				$.plot($("#errors_graph"), [crcErrorCurve, losErrorCurve, lofErrorCurve, esErrorCurve], { 
+					xaxis: { mode: "time", timeformat: timeFormat }, 
+					yaxis: { min: 0 },
+					points: { show: false }, 
+					lines: { show: true }, 
+					pan: { interactive: true },
+					zoom: { interactive: true } 
+					});
+			}
+		});
+		
+		// Get totals and averages
+		SendCommandToServer({action:'get_value', type:'totals', name:'Errors', startTime:times.startTime, endTime:times.endTime}, function(jsonResponse)
+		{
+			if (jsonResponse.isError)
+			{
+				$("#errorsTotals").html(jsonResponse.ErrorString);
+			}
+			else
+			{	
+				ParseContentData(window.ContentData.blocks.errors_totals_block, jsonResponse.ReturnData[0], function(output)
+				{
+					$("#errorsTotals").html(output);
+				})
+			}
+		});
+	<&/javascript>
+	</div>
+	<table id="errorsTotals">
+	
+	</table>
+<&/contentdata>
+
+<&contentdata
+block_name = 'errors_totals_block'
+author = 'mrmt32'
+type = 'block'
+>
+	<thead>
+		<tr><th/><th>CRC</th><th>LOS</th><th>LOF</th><th>ES</th></tr>
+	</thead>
+	<tr class="odd">
+		<th>Total Errors: </th>
+		<td>{$totalCrcErrors} <span class='unit'>Errors</span></td>
+		<td>{$totalLosErrors} <span class='unit'>Errors</span></td>
+		<td>{$totalLofErrors} <span class='unit'>Errors</span></td>
+		<td>{$totalErroredSeconds} <span class='unit'>Errors</span></td>
+	</tr>
+	<tr>
+		<th>Average Error Rate: </th>
+		<td>{$avgCrcErrors} <span class='unit'>Errors/hr</span></td>
+		<td>{$avgLosErrors} <span class='unit'>Errors/hr</span></td>
+		<td>{$avgLofErrors} <span class='unit'>Errors/hr</span></td>
+		<td>{$avgErroredSeconds} <span class='unit'>Errors/hr</span></td>
+	</tr>
+<&/contentdata>

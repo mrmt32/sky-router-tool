@@ -1,0 +1,16 @@
+<&contentdata
+block_name = 'graph_menu_block'
+author = 'mrmt32'
+type = 'block'
+>
+<div class='graphMenu'>
+	<p class='graphMenuCaption'>Select a timespan below:</p>
+	<ul>
+		<li><a href="#graphs,{$pagename}&type=lasthour&errorCurve={$errorCurve}" id='lasthour'>Last Hour</a></li> 
+		<li><a href="#graphs,{$pagename}&type=lastday&errorCurve={$errorCurve}" id='lastday'>Last Day</a></li> 
+		<li><a href="#graphs,{$pagename}&type=lastmonth&errorCurve={$errorCurve}" id='lastmonth'>Last Month</a></li> 
+		<li><a href="#graphs,{$pagename}&type=lastyear&errorCurve={$errorCurve}" id='lastyear'>Last Year</a></li>
+		<li><a href="#graphs,{$pagename}&type=last10year&errorCurve={$errorCurve}" id='last10year'>Last 10 Years</a></li>
+	</ul>
+</div>
+<&/contentdata>

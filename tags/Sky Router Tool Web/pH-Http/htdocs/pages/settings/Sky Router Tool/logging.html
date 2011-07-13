@@ -1,0 +1,77 @@
+<&contentdata 
+section_name = 'settings'
+page_name = 'loggers'
+author = 'mrmt32'
+type = 'page'
+>
+
+<div class='settingsPage'>
+	<h2>Router Logging Settings</h2>
+	<p>Here you can set up the router logging feature.</p>
+	<form action='interface.json?action=set_settings' method='post' id='routerLoggingForm'>
+	
+			<&javascript delayed='true'>
+					SendCommandToServer({action:'get_settings', settings:'RouterPollInterval'}, function(jsonResponse)
+					{
+						if (jsonResponse.isError)
+						{
+							$("#routerLoggingForm").html(jsonResponse.ErrorString);
+						}
+						else
+						{
+							$("#routerLoggingForm").submit(function()
+							{
+								// Check the value is a valid time
+								var interval = $("#RouterPollInterval").val();
+								if (isNaN(interval) || interval < 0)
+								{
+									alert("Interval entered is not a valid time-span!");
+								}
+								else
+								{
+									$.post(InterfaceLocation + "?action=set_settings", $("#routerLoggingForm").serialize(), function(jsonResponse)
+									{
+										ParseContentData(window.ContentData.blocks.settings_change_status_block, {jsonResponse:jsonResponse}, function (output)
+										{
+											$(".settingsPage").html(output);
+										});
+										
+									}, "json");
+									
+									ParseContentData(window.ContentData.blocks.loading_text_block, {}, function (output)
+									{
+										$(".settingsPage").html(output);
+									});
+								}
+				
+								return false;
+							});
+							
+							ParseContentData(window.ContentData.blocks.logger_settings_form_block, jsonResponse.ReturnData, function(output)
+							{
+								$("#routerLoggingForm").html(output);
+							})
+						}
+					});
+			<&/javascript>
+	
+	</form>
+</div>
+
+<&/contentdata>
+
+<&contentdata
+block_name = 'logger_settings_form_block'
+author = 'mrmt32'
+type = 'block'
+>
+<fieldset>
+	<h3>Router Polling</h3>
+	<p>Note that this value should be no more than ~20 minutes as a greater time-span can cause incomplete bandwidth usage data.</p>
+	<p>The default of 1 minute is recommended.</p>
+	<p><label for='RouterPollInterval'>Router Polling Interval: </label> <input type='text' name='RouterPollInterval' id='RouterPollInterval' value='<$RouterPollInterval>' size='5' /> Seconds</p>
+</fieldset>	
+<fieldset>
+	<p class='submitButton'><input type='submit' value='Save' /></p>
+</fieldset>
+<&/contentdata>

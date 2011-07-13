@@ -1,0 +1,229 @@
+<&contentdata 
+section_name = 'home'
+page_name = 'process_list'
+author = 'mrmt32'
+type = 'page'
+>
+
+<h2>Running Processes</h2>
+<div id='processOverview'>
+	
+	
+</div>
+
+<table>
+<thead>
+	<tr>
+		<th>PID</th><th>Name</th><th>User ID</th><th>Mem. Usage</th><th>Run State</th><th>Priority</th>
+	</tr>
+</thead>
+<tbody id='process_list'>
+<&javascript>
+	SendCommandToServer({action:'get_value', type:'current', name:'processList'}, function(jsonResponse)
+	{
+		if (jsonResponse.isError)
+		{
+			$("#connection_details").html(jsonResponse.ErrorString);
+		}
+		else
+		{	
+			var i = 0;
+			var totalMem = 0;
+			for (processId in jsonResponse.ReturnData.processList)
+			{
+				var process = jsonResponse.ReturnData.processList[processId];
+				
+				$("#process_list").append("<tr id='process" + i + "' class='" + (i%2 == 0? "" : "odd ") + "selectable'>"
+										+ "<td>" + process.Pid + "</td>"
+										+ "<td>" + process.CommandLine + "</td>"
+										+ "<td>" + process.UserId + "</td>"
+										+ "<td>" + process.VmSize + "</td>"
+										+ "<td>" + process.RunState + "</td>"
+										+ "<td>" + process.Priority + "</td>"
+										+ "</tr>");
+				
+				
+				// Load detailed process info dialog
+				var tempFunction = function(pid)
+				{
+					$("#process" + i).click(function()
+					{
+						SendCommandToServer({action:'get_value', type:'current', name:'detailedProcessInfo:' + pid}, function(jsonResponse)
+						{
+							if (jsonResponse.isError)
+							{
+								$("#processDialog").html(jsonResponse.ErrorString);
+								$("#processDialog").dialog(
+								{
+									modal: true, 
+									close: function() { $(this).dialog('destroy') },
+									width: 300,
+									buttons: { "OK": function() { $(this).dialog("close"); } }
+								});
+							}
+							else
+							{	
+								var process = jsonResponse.ReturnData['detailedProcessInfo:' + pid];
+								
+								if (process.CommandLine == "" && process.Name == "")
+								{
+									$("#processDialog").html("Process no longer exists!");
+									$("#processDialog").dialog(
+									{
+										modal: true, 
+										close: function() { $(this).dialog('destroy') },
+										width: 300,
+										buttons: { "OK": function() { $(this).dialog("close"); } }
+									});
+								}
+								else
+								{
+									var environmentString = "";
+									
+									for (variableName in process.Environment)
+									{
+										environmentString += variableName + " = " + process.Environment[variableName] + "<br/>";
+									}
+									
+									parameters = 
+									{
+										processId: process.Pid,
+										processName: process.Name,
+										commandLine: process.CommandLine,
+										vmSize: process.VmSize,
+										vmRSS: process.VmRSS,
+										vmExe: process.VmExe,
+										vmLib: process.VmLib,
+										vmStk: process.VmStk,
+										threadCount: process.Threads,
+										sleepTime: process.SleepAverage,
+										runState: process.RunState,
+										environment: environmentString
+									};
+								
+									ParseContentData(window.ContentData.blocks.process_information_block, parameters, function(output)
+									{
+										$("#processDialog").html(output);
+										$("#processDialog").dialog(
+										{
+											modal: true, 
+											close: function() { $(this).dialog('destroy') },
+											width: 450,
+											buttons: 
+											{ 
+												"OK": function() 
+												{ 
+													$(this).dialog("close"); 
+												}, 
+												"Kill Process": function() 
+												{ 
+	 												$.post(InterfaceLocation + "?action=kill_process", {pid: pid}, function(jsonResponse)
+													{
+														if (jsonResponse.isError)
+														{
+															alert("Error killing process: " + jsonResponse.ErrorString);
+														}
+														else
+														{
+															alert("Process with PID '" + pid + "' killed.");
+														}
+													});
+													$(this).dialog("close"); 
+	 											} 
+											}
+										});
+									});
+								}
+							}
+						});
+					});
+				}
+
+				tempFunction(process.Pid);
+				totalMem += process.VmSize;
+				i++;
+			}
+			
+			// Load overview table
+			parameters = 
+			{
+				totalMemoryUsage: totalMem,
+				totalMemoryUsagePercent: Math.round((totalMem * 100) / 13352 * 100) / 100,
+				processesCount: i
+			};
+		
+			ParseContentData(window.ContentData.blocks.process_overview_block, parameters, function(output)
+			{
+				$("#processOverview").html(output);
+			});
+		}
+	});
+
+<&/javascript>
+</tbody>
+</table>
+
+<div id='processDialog' title="Process Information">
+	
+</div>
+<&/contentdata>
+
+<&contentdata
+block_name = 'process_overview_block'
+author = 'mrmt32'
+type = 'block'
+>
+<table>
+	<tbody>
+		<tr><th>Total Memory Allocation: </th><td><$totalMemoryUsage> <span class="unit">KB</span> (<$totalMemoryUsagePercent>%)</td></tr>	
+		<tr><th>Running Processes: </th><td><$processesCount></td></tr>	
+	</tbody>
+</table>
+<&/contentdata>
+
+<&contentdata
+block_name = 'process_information_block'
+author = 'mrmt32'
+type = 'block'
+>
+	<table>
+		<tbody>
+			<tr>
+				<th>Process ID</th> <td><$processId></td>
+			</tr>
+			<tr class='odd'>
+				<th>Process Name</th> <td><$processName></td>
+			</tr>
+			<tr>
+				<th>Command Line</th> <td><$commandLine></td>
+			</tr>
+			<tr class='odd'>
+				<th>VmSize</th> <td><$vmSize> <span type='unit'>KB</span></td>
+			</tr>
+			<tr>
+				<th>VmRSS</th> <td><$vmRSS> <span type='unit'>KB</span></td>
+			</tr>
+			<tr class='odd'>
+				<th>VmExe</th> <td><$vmExe> <span type='unit'>KB</span></td>
+			</tr>
+			<tr>
+				<th>VmLib</th> <td><$vmLib> <span type='unit'>KB</span></td>
+			</tr>
+			<tr class='odd'>
+				<th>VmStk</th> <td><$vmStk> <span type='unit'>KB</span></td>
+			</tr>
+			<tr>
+				<th>Threads</th> <td><$threadCount></td>
+			</tr>
+			<tr class='odd'>
+				<th>Avg Sleep Time</th> <td><$sleepTime><span type='unit'>%</span></td>
+			</tr>
+			<tr>
+				<th>Run State</th> <td><$runState></td>
+			</tr>
+			<tr class='odd'>
+				<th>Environment</th> <td><$environment></td>
+			</tr>
+		</tbody>
+	</table>
+<&/contentdata>
