@@ -1,0 +1,22 @@
+<&contentdata 
+section_name = 'help'
+page_name = 'faq'
+author = 'mrmt32'
+type = 'page'
+>
+<h2>Frequently Asked Questions</h2>
+<div class='helpPage'>
+	<h3>I adjusted the target SNR margin and resynced but my SNR margin didn't decrease and my sync speed didn't increase?</h3>
+	<p>This generally means you have either been capped by your ISP or you have already reached the maximum possible rate with ADSL2+ (~24mbit/sec). Also note that changing the target SNR margin will not work for the DG934G router.</p>
+	
+	<h3>What is the difference between 'Target SNR Margin', 'SNR Margin' and 'SNR'?</h3>
+	<ul>
+		<li><p>SNR (Signal to Noise Ratio) is the ratio between the power of the ADSL signal and the power of the unwanted noise (this is what's shown on the SNR graph).</p></li>
+		<li><p>SNR Margin is the difference between the current SNR and the SNR required to achieve your current speed (this is what's shown on your router's configuration page).</p></li>
+		<li><p>Target SNR Margin is the SNR margin that the router tries to achieve when it first connects (it will decrease the sync speed to reach the target). The lower you set the target SNRM the higher you will sync (but the line will be more unreliable).</p></li>
+	</ul>
+	
+	<h3>Will Sky Router Tool ever support the Sky Sagem F@st 2504 (the other router supplied by Sky)?</h3>
+	<p>I don't know anything about this router, if it has a common chipset and some form of linux it might be possible...</p>
+</div>
+<&/contentdata>

@@ -1,0 +1,58 @@
+<&contentdata 
+section_name = 'tools'
+page_name = 'run_command'
+author = 'mrmt32'
+type = 'page'
+>
+<div class="settingsPage">
+	<h2>Run Command</h2>
+	<form id="runCommandForm">
+	<p>Using this tool you can run any command on the router and see the result.</p>
+	<fieldset>
+		<p><label for='command'>Command: </label><input name='command' id='command' type='text' value='' /></p>
+	</fieldset>
+	<fieldset>
+		<p class='submitButton'><input type="submit" value="Execute" /></p>
+	</fieldset>
+	</form>
+	
+	<&javascript delayed='true'>
+		$("#runCommandForm").submit(function()
+		{
+			$.post(InterfaceLocation + "?action=command",  $("#runCommandForm").serialize(), function(jsonResponse)
+			{
+				if (jsonResponse.isError)
+				{
+					alert("Error running command: " + jsonResponse.ErrorString);
+					window.location.hash = "#tools";
+					return;
+				}
+				
+				ParseContentData(window.ContentData.blocks.run_command_result_block, jsonResponse, function (output)
+				{
+					$(".settingsPage").html(output);
+				});
+				
+			}, "json");
+			
+			ParseContentData(window.ContentData.blocks.loading_text_block, {}, function (output)
+			{
+				$(".settingsPage").html(output);
+			});
+			return false;
+		});
+	<&/javascript>
+</div>
+<&/contentdata>
+
+<&contentdata
+block_name = 'run_command_result_block'
+author = 'mrmt32'
+type = 'block'
+>
+	<h2>Command Result</h2>
+	<pre>
+		<$ReturnData>
+	</pre>
+	<p><button onclick="ChangePage(document.location.hash.substring(1))">Back</button></p>
+<&/contentdata>
