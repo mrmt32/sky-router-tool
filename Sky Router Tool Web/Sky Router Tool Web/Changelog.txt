@@ -5,9 +5,14 @@
 ###########################################
 
 -----
-V1.0 Beta 7
+V1.1
 -----
+-- Added: Sagem F@ST 2504 Support
+-- Added: Option to toggle display of downtime on the bandwidth usage graph 
+
 -- Fixed: High CPU caused by infinate loop in HTTP server (occured when client unexpectily disconnects in a certain way)
+-- Fixed: Unpredictable behaviour of excessive speed measurement checker
+-- Fixed: Added code to prevent large SNRM spikes showing in graph (SNRM differences of over 20db are discarded) 
 
 -----
 V1.0 Beta 6
