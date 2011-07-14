@@ -250,9 +250,11 @@ You need a uclibc-crosstools toolchain to compile applications for this firmware
 CFM is a process which runs on both the Sky and Sagem firmwares, it controls many aspects of the router. 
 
 *Web Server*
+
 CFM contains an micro_httpd web server which hosts the web interface. It contains internal functions which allow the editing of the configuration data by built in cgi scripts. On Sky firmwares, if the "LockSagemWebUI" setting is set to 1, only web pages matching sky_`*`.html are accessible. This locks out the Sagem web UI (and settings, the sky interface uses a separate cgi url with limited capabilities). The web pages are stored in standard HTML format with special tags which allow firmware values to be displayed.
 
 *Telnet*
+
 The CFM also contains a built-in telnet server, this is however disabled by default on sky firmwares. It is also impossible to enable from the sky web interface. Telnet access control is managed by the "srvCtrlList" setting in the persistent storage. When enabled the username and password used to login to telnet are the same as the web ui details.
 
 = Sky Auto-Update =
