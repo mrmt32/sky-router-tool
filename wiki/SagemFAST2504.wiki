@@ -1,0 +1,19 @@
+#summary The 3rd router supplied by Sky, based on a Broadcom BCM6348 chipset. Supports most features of Sky Router Tool with a custom firmware
+#labels Featured
+
+= Chipset =
+
+The chipset in this router is the same as that in the first (Netgear DG834GT) sky router; the Broadcom BCM6348. This contains a 256MHz MIPS CPU, ADSL2+ capabilities and USB 1.1 support. There is no USB port fitted on this board but there is an unpopulated position for a USB B port.
+
+The board contains a 4096KB SST39VF3201 flash chip which holds the bootloader, firmware and persistent storage.
+
+= Bootloader =
+
+This router uses a variant of Broadcom's CFE bootloader. Firmware can be flashed through a web interface which becomes active if either the current firmware is corrupt, the base mac address is blank or the CFE command line is entered (see the serial port section). The default IP address for this interface is 192.168.1.1.
+The recovery interface accepts slightly different firmware formats depending on the board id and customer id settings:
+
+== Board ID: FAST2404, Customer ID: Sagm ==
+With these settings the firmware must be consist of a tag following the "Version 3.10+" format on http://wiki.openwrt.org/doc/techref/brcm63xx.imagetag followed by the root filesystem and kernel. Flashing the CFE in this way may also be possible but I have not tested this, this is also not recommended as a bad CFE flash will brick your router (I have yet to find any form of JTAG connection on this router which is the only way to flash without a bootloader).
+
+== Board ID: 2504, Customer ID: Sky (default) ==
+The 'Header CRC' field for these firmwares is different, I have yet to work out what it represents. For now only official sky firmwares can be flashed using this method.
