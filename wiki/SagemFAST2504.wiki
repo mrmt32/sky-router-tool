@@ -243,6 +243,9 @@ The configuration is formatted as an XML file, an example is shown below:
 </psitree>
 }}}
 
+= Toolchain / Compiling applications =
+You need a uclibc-crosstools toolchain to compile applications for this firmware. A pre-made toolchain is available in the gpl releases for many other routers based on the BCM63xx series of chipsets, I think the one I used came from a D-Link source code release. I was able to compile mini_httpd quite easily for this platform. Linux (or possibly cygwin?) is required to compile applications.
+
 = CFM =
 CFM is a process which runs on both the Sky and Sagem firmwares, it controls many aspects of the router. 
 
