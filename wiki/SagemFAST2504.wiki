@@ -57,7 +57,7 @@ All of the router's settings (with the exception of CFE config e.g. board id, cu
 
 The configuration is formatted as an XML file, an example is shown below:
 
-<code language='xml'>
+{{{
 <psitree>
 <WirelessCfg>
 <vars state="enabled" hide="0" wlAdvancedMode="1" ssIdIndex="0" country="GB" fltMacMode="disabled"  apMode="ap"  bridgeRestrict="disabled"  wdsMAC_0=""  wdsMAC_1=""  wdsMAC_2=""  wdsMAC_3=""  apIsolation="off" band="b" channel="0" rate="auto" multicastRate="auto" basicRate="default" fragThreshold="2346" RTSThreshold="2347" DTIM="1" beacon="100" XPress="off" gMode="auto" gProtection="auto" preamble="long" AfterBurner="off" WME="off" WMENoAck="off" TxPowerPercent="100" RegulatoryMode="off" PreNetRadarDectTime="60" InNetRadarDectTime="60" TpcMitigation="0" AutoChannelTimer="0" MaxAssoc="128" />
@@ -149,7 +149,7 @@ The configuration is formatted as an XML file, an example is shown below:
 <entry1 vccId="2" vlanMuxId="-1" conId="1" name="pppoa_0_38_1" protocol="PPPOA" encap="VCMUX" firewall="enable" nat="enable" igmp="enable" vlanId="-1" service="enable" instanceId="1509949445" enblIptv="disable" iptvName=""/>
 </wan_0_38>
 </psitree>
-</code>
+}}}
 
 = CFM =
 CFM is a process which runs on both the Sky and Sagem firmwares, it controls many aspects of the router. 
