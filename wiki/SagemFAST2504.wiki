@@ -251,7 +251,7 @@ CFM is a process which runs on both the Sky and Sagem firmwares, it controls man
 
 *Web Server*
 
-CFM contains an micro_httpd web server which hosts the web interface. It contains internal functions which allow the editing of the configuration data by built in cgi scripts. On Sky firmwares, if the "LockSagemWebUI" setting is set to 1, only web pages matching sky_`*`.html are accessible. This locks out the Sagem web UI (and settings, the sky interface uses a separate cgi url with limited capabilities). The web pages are stored in standard HTML format with special tags which allow firmware values to be displayed.
+CFM contains an micro_httpd web server which hosts the web interface. It contains internal functions which allow the editing of the configuration data by built in cgi scripts. On Sky firmwares, if the "LockSagemWebUI" setting is set to 1, only web pages matching sky`_``*`.html are accessible. This locks out the Sagem web UI (and settings, the sky interface uses a separate cgi url with limited capabilities). The web pages are stored in standard HTML format with special tags which allow firmware values to be displayed.
 
 *Telnet*
 
