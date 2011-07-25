@@ -1,0 +1,58 @@
+<&contentdata 
+section_name = 'tools'
+page_name = 'speed_test'
+author = 'mrmt32'
+type = 'page'
+>
+<div class="settingsPage">
+	<h2>Speed Test</h2>
+	<form id="speedTestForm">
+	<p>Type in a url to download and the size of the file (or just use the default) and click "Test" to perform a speed test.</p>
+	<p>Note that this may take a while to complete for slow connections.</p>
+	<fieldset>
+		<p><label for='address'>Url: </label><input name='address' id='address' type='text' value='http://static.btopenworld.com/broadband/adhoc_pages/speedtest/files/largedownload.me' /></p>
+		<p><label for='address'>Size: </label><input name='size' id='size' type='text' value='15,304.91015625' /></p>
+	</fieldset>
+	<fieldset>
+		<p class='submitButton'><input type="submit" value="Test" /></p>
+	</fieldset>
+	</form>
+	
+	<&javascript delayed='true'>
+		$("#speedTestForm").submit(function()
+		{
+			$.post(InterfaceLocation + "?action=speed_test",  $("#speedTestForm").serialize(), function(jsonResponse)
+			{
+				if (jsonResponse.isError)
+				{
+					alert("Error performing speed test: " + jsonResponse.ErrorString);
+					window.location.hash = "#tools";
+					return;
+				}
+				
+				ParseContentData(window.ContentData.blocks.speed_test_result_block, {speed: Math.round(jsonResponse.ReturnData.Speed * 100) / 100, address: jsonResponse.ReturnData.Address}, function (output)
+				{
+					$(".settingsPage").html(output);
+				});
+				
+			}, "json");
+			
+			ParseContentData(window.ContentData.blocks.loading_text_block, {}, function (output)
+			{
+				$(".settingsPage").html(output);
+			});
+			return false;
+		});
+	<&/javascript>
+</div>
+<&/contentdata>
+
+<&contentdata
+block_name = 'speed_test_result_block'
+author = 'mrmt32'
+type = 'block'
+>
+	<h2>Speed Test Result</h2>
+	<p>Your router was able to download <a href="<$address>"><$address></a> at a speed of: <br/>
+	<strong><$speed></strong> KB/sec.</p>
+<&/contentdata>

@@ -1,0 +1,52 @@
+<&contentdata 
+section_name = 'tools'
+page_name = 'telnet'
+author = 'mrmt32'
+type = 'page'
+>
+<div class="settingsPage">
+	<h2>Telnet</h2>
+	<form id="pingForm">
+	<p>Type a port number to start utelnetd on and click "Enable Telnet".</p>
+	<fieldset>
+		<p class='submitButton'><input type="submit" value="Enable Telnet" /></p>
+	</fieldset>
+	</form>
+	
+	<&javascript delayed='true'>
+		$("#pingForm").submit(function()
+		{
+			$.post(InterfaceLocation + "?action=ping",  $("#pingForm").serialize(), function(jsonResponse)
+			{
+				if (jsonResponse.isError)
+				{
+					alert("Error performing ping: " + jsonResponse.ErrorString);
+					window.location.hash = "#tools";
+					return;
+				}
+				
+				ParseContentData(window.ContentData.blocks.ping_result_block, {result: jsonResponse.ReturnData}, function (output)
+				{
+					$(".settingsPage").html(output);
+				});
+				
+			}, "json");
+			
+			ParseContentData(window.ContentData.blocks.loading_text_block, {}, function (output)
+			{
+				$(".settingsPage").html(output);
+			});
+			return false;
+		});
+	<&/javascript>
+</div>
+<&/contentdata>
+
+<&contentdata
+block_name = 'ping_result_block'
+author = 'mrmt32'
+type = 'block'
+>
+	<h2>Ping Results</h2>
+	<p><textarea cols="65" rows="20" readonly="readonly"><$result></textarea></p>
+<&/contentdata>
