@@ -121,7 +121,7 @@ namespace Sky_Router_Tool_Web.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("F_ST2504")]
+        [global::System.Configuration.DefaultSettingValueAttribute("DG834GT")]
         public string RouterModel {
             get {
                 return ((string)(this["RouterModel"]));
