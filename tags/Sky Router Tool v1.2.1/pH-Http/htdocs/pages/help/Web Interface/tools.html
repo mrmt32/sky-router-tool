@@ -1,0 +1,26 @@
+<&contentdata 
+section_name = 'help'
+page_name = 'tools'
+author = 'mrmt32'
+type = 'page'
+>
+<h2>Web Interface Help - Tools</h2>
+<div class='helpPage'>
+	<h3>Target SNR Margin</h3>
+	<p>This tool allows you to change the target SNR margin (the SNR margin that the DSLAM tries to acheive). This unfortunatly does not work yet for the DG934G.</p>
+	<p>Increasing the target SNR margin will give you more stability but a lower sync speed. Decreasing the target SNR margin will give a less stable, but faster line.</p>
+	<p>To change the target SNR just drag the slider to your required value and click "Set and Resync". The values is measured as a percentage of the target SNR set by your ISP; for Sky the default is 7dB.</p>
+	
+	<h3>Speed Test</h3>
+	<p>This tool allows you to test the speed of your connection by getting your router to download a file and time how long it takes to download. As the test is run on the router and not your computer, it is not affected by any problems with your LAN or Wifi connection.</p>
+	<p>To use it just click "Test".</p>
+	
+	<h3>Ping</h3>
+	<p>This tool allows you to ping a host from your router.</p>
+	
+	<h3>Calculate Sky Password</h3>
+	<p>This tool calculates the default sky values for your router. These values are calculated from your router's LAN MAC address. The most usefull values calculated are the PPP username and password; these can be used in a 3rd party router.</p>
+	<p>The other values calculated are: default wireless password, default wireless channel and default wireless SSID</p>
+	<p>To use it just type in your LAN MAC address (if you are calculating details for your router this will already be filled in correctly), select the model of router and click "Calculate".</p>
+</div>
+<&/contentdata>

