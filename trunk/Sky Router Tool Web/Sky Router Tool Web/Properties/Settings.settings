@@ -27,7 +27,7 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="RouterModel" Type="System.String" Scope="User">
-      <Value Profile="(Default)">F_ST2504</Value>
+      <Value Profile="(Default)">DG834GT</Value>
     </Setting>
   </Settings>
 </SettingsFile>
