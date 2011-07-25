@@ -136,10 +136,36 @@ namespace pHMb.Router.Loggers
 
         public SqlCeDataReader Retrieve(DateTime startDate, DateTime endDate, SqlCeConnection databaseConnection)
         {
-            //string sqlQuery = string.Format("SELECT * FROM Errors WHERE (startTime > '{0:MM/dd/yyyy HH:mm:ss}') AND (endTime < '{1:MM/dd/yyyy HH:mm:ss}') ORDER BY startTime DESC", startDate, endDate);
-            int resolution = (int)Math.Ceiling((endDate - startDate).TotalSeconds / 2000);
+            DateTime actualStartDate = startDate;
+            DateTime actualEndDate = endDate;
+            SqlCeCommand cmd;
 
-            string sqlQuery = string.Format(@"SELECT        MIN(startTime) AS startTime, MAX(endTime) AS endTime, SUM(crcErrors) AS crcErrors, SUM(losErrors) AS losErrors, SUM(lofErrors) AS lofErrors, SUM(erroredSeconds) AS erroredSeconds
+            // We have to get the actual start and end times first
+            string sqlQuery = string.Format(@"SELECT        MIN(startTime) AS startTime, MAX(endTime) AS endTime
+                                              FROM          Errors
+                                              WHERE         (startTime > '{0:MM/dd/yyyy HH:mm:ss}')
+                                              AND           (endTime < '{1:MM/dd/yyyy HH:mm:ss}')",
+                                              startDate, endDate);
+
+            using (cmd = new SqlCeCommand(sqlQuery, databaseConnection))
+            {
+                using (SqlCeDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        if (!reader.IsDBNull(0) && !reader.IsDBNull(1))
+                        {
+                            actualStartDate = reader.GetDateTime(0);
+                            actualEndDate = reader.GetDateTime(1);
+                        }
+                    }
+                }
+            }
+
+            //string sqlQuery = string.Format("SELECT * FROM Errors WHERE (startTime > '{0:MM/dd/yyyy HH:mm:ss}') AND (endTime < '{1:MM/dd/yyyy HH:mm:ss}') ORDER BY startTime DESC", startDate, endDate);
+            int resolution = (int)Math.Ceiling((actualEndDate - actualStartDate).TotalSeconds / 2000);
+
+            sqlQuery = string.Format(@"SELECT        MIN(startTime) AS startTime, MAX(endTime) AS endTime, SUM(crcErrors) AS crcErrors, SUM(losErrors) AS losErrors, SUM(lofErrors) AS lofErrors, SUM(erroredSeconds) AS erroredSeconds
                                               FROM          Errors
                                               WHERE         (startTime > '{0:MM/dd/yyyy HH:mm:ss}')
                                               AND           (endTime < '{1:MM/dd/yyyy HH:mm:ss}')
@@ -147,7 +173,7 @@ namespace pHMb.Router.Loggers
                                               ORDER BY startTime DESC",
                                   startDate, endDate, resolution);
             
-            SqlCeCommand cmd = new SqlCeCommand(sqlQuery, databaseConnection);
+            cmd = new SqlCeCommand(sqlQuery, databaseConnection);
 
             return cmd.ExecuteReader();
         }
