@@ -1,8 +1,14 @@
 ﻿###########################################
 #                                         #
-#  Sky Router Tool v1.0 beta 6 Changelog  #
+#  Sky Router Tool v1.2.1	   Changelog  #
 #                                         #
 ###########################################
+
+-----
+V1.2.1
+-----
+-- Fixed: Less data is now sent to the javascript graphs, before the whole database was sent (far more than is possible to view
+			at the graph's resolution) causing very slow loading for large databases.
 
 -----
 V1.1
