@@ -145,7 +145,6 @@
     <Content Include="htdocs\pages\settings\settings.html" />
     <Content Include="htdocs\pages\settings\Sky Router Tool\logging.html" />
     <Content Include="htdocs\pages\settings\Sky Router Tool\log_consolidation.html" />
-    <Content Include="htdocs\pages\settings\Sky Router Tool\new_file.js" />
     <Content Include="htdocs\pages\settings\Sky Router Tool\router_connection.html" />
     <Content Include="htdocs\pages\tools\dump_firmware.html" />
     <Content Include="htdocs\pages\tools\overview.html" />
