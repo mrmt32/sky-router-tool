@@ -115,7 +115,17 @@ namespace pHMb.Router.Loggers
 
         public SqlCeDataReader Retrieve(DateTime startDate, DateTime endDate, SqlCeConnection databaseConnection)
         {
-            string sqlQuery = string.Format("SELECT * FROM Snrm WHERE (time > '{0:MM/dd/yyyy HH:mm:ss}') AND (time < '{1:MM/dd/yyyy HH:mm:ss}') ORDER BY time DESC", startDate, endDate);
+            //string sqlQuery = string.Format("SELECT * FROM Snrm WHERE (time > '{0:MM/dd/yyyy HH:mm:ss}') AND (time < '{1:MM/dd/yyyy HH:mm:ss}') ORDER BY time DESC", startDate, endDate);
+            int resolution = (int)Math.Ceiling((endDate - startDate).TotalSeconds / 2000);
+
+            string sqlQuery = string.Format(@"SELECT        DATEADD(second, DATEDIFF(second, MIN(time), MAX(time)) / 2, MIN(time)) AS time, AVG(snrmDown) AS snrmDown, AVG(snrmUp) AS snrmUp, MIN(time), MAX(time)
+                                              FROM          Snrm
+                                              WHERE         (time > '{0:MM/dd/yyyy HH:mm:ss}')
+                                              AND           (time < '{1:MM/dd/yyyy HH:mm:ss}')
+                                              GROUP BY DATEADD(second, DATEDIFF(second, '01/01/2009', time) / {2:G0} * {2:G0}, '01/01/2009')
+                                              ORDER BY time DESC",
+                                                startDate, endDate, resolution);
+
             SqlCeCommand cmd = new SqlCeCommand(sqlQuery, databaseConnection);
 
             return cmd.ExecuteReader();

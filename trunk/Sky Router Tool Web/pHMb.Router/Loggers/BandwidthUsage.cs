@@ -67,14 +67,8 @@ namespace pHMb.Router.Loggers
                         if ((downSpeed > (30 * 1024 * 1024) / 8) ||
                             (upSpeed > (6 * 1024 * 1024) / 8))
                         {
-                            //Console.WriteLine("! Down Speed: {0:g} KB/s, Up Speed: {1:g} KB/s", downSpeed / 1024, upSpeed / 1024);
-                            //Console.WriteLine("> Down Speed: {0:g} KB/s, Up Speed: {1:g} KB/s", (30 * 1024) / 8, (6 * 1024) / 8);
-                            //Console.WriteLine("> This Time: {0:T}, Last Time: {1:T}, Difference {2:T}", retrieveTime, _lastUpdateTime, (retrieveTime - _lastUpdateTime));
-                            //Console.WriteLine("> Uptime: {0:G}", uptime);
-
                             throw new ApplicationException("Speed out of range! Down Speed:" + downSpeed + ", Up Speed:" + upSpeed);
                         }
-                        //Console.WriteLine("Down Speed: {0:g} KB/s, Up Speed: {1:g} KB/s", downSpeed/1024, upSpeed/1024);
                     }
 
                     // Add value to database
@@ -157,7 +151,16 @@ namespace pHMb.Router.Loggers
 
         public SqlCeDataReader Retrieve(DateTime startDate, DateTime endDate, SqlCeConnection databaseConnection)
         {
-            string sqlQuery = string.Format("SELECT * FROM BandwidthUsage WHERE (startTime > '{0:MM/dd/yyyy HH:mm:ss}') AND (endTime < '{1:MM/dd/yyyy HH:mm:ss}') ORDER BY startTime DESC", startDate, endDate);
+            //string sqlQuery = string.Format("SELECT * FROM BandwidthUsage WHERE (startTime > '{0:MM/dd/yyyy HH:mm:ss}') AND (endTime < '{1:MM/dd/yyyy HH:mm:ss}') ORDER BY startTime DESC", startDate, endDate);
+            int resolution = (int)Math.Ceiling((endDate - startDate).TotalSeconds / 2000);
+
+            string sqlQuery = string.Format(@"SELECT        MIN(startTime) AS startTime, MAX(endTime) AS endTime, SUM(usageUp) AS usageUp, SUM(usageDown) AS usageDown
+                                              FROM          BandwidthUsage
+                                              WHERE         (startTime > '{0:MM/dd/yyyy HH:mm:ss}')
+                                              AND           (endTime < '{1:MM/dd/yyyy HH:mm:ss}')
+                                              GROUP BY DATEADD(second, DATEDIFF(second, '01/01/2009', startTime) / {2:G0} * {2:G0}, '01/01/2009')
+                                              ORDER BY startTime DESC",
+                                  startDate, endDate, resolution);
             SqlCeCommand cmd = new SqlCeCommand(sqlQuery, databaseConnection);
 
             return cmd.ExecuteReader();
