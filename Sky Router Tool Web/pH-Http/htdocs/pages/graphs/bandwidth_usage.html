@@ -89,7 +89,7 @@ type = 'page'
 						errCount++;
 					}
 				}
-				
+                				
 				if (parameters.errorCurve != "on")
                 {
                      $.plot($("#bandwidth_usage_graph"), [downloadCurve, uploadCurve], { 
@@ -124,7 +124,7 @@ type = 'page'
 			}
 			else
 			{	
-				parameters = 
+				params = 
 				{
 				totalUsageDown: Math.round(jsonResponse.ReturnData[0].totalUsageDown / 1024 / 1024 *100) / 100,
 				totalUsageUp: Math.round(jsonResponse.ReturnData[0].totalUsageUp / 1024 / 1024 *100) / 100,
@@ -132,7 +132,7 @@ type = 'page'
 				avgSpeedUp: Math.round(jsonResponse.ReturnData[0].avgUpSpeed / 1024 *100) / 100
 				};
 			
-				ParseContentData(window.ContentData.blocks.bandwitdth_usage_totals_block, parameters, function(output)
+				ParseContentData(window.ContentData.blocks.bandwitdth_usage_totals_block, params, function(output)
 				{
 					$("#bandwidthUsageTotals").html(output);
 				})
