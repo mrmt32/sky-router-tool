@@ -218,7 +218,7 @@
                 {
                 "Name" = "8:.NET Framework"
                 "Message" = "8:[VSDNETMSG]"
-                "FrameworkVersion" = "8:3.5.21022"
+                "FrameworkVersion" = "8:3.5.21022 "
                 "AllowLaterVersions" = "11:FALSE"
                 "InstallUrl" = "8:http://go.microsoft.com/fwlink/?LinkId=76617"
                 }
@@ -230,7 +230,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:pHMb.Router, Version=1.0.6.0, Culture=neutral, processorArchitecture=x86"
+            "AssemblyAsmDisplayName" = "8:pHMb.Router, Version=1.1.0.0, Culture=neutral, processorArchitecture=x86"
                 "ScatterAssemblies"
                 {
                     "_088E3F9BFB32E1D4AA1B9EC774027C57"
@@ -261,7 +261,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:pHMb.pH-Http, Version=1.0.6.0, Culture=neutral, processorArchitecture=x86"
+            "AssemblyAsmDisplayName" = "8:pHMb.pH-Http, Version=1.1.0.0, Culture=neutral, processorArchitecture=x86"
                 "ScatterAssemblies"
                 {
                     "_5353864A3D1BE96965597C61D4BF0DD4"
@@ -470,8 +470,8 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Sky Router Tool"
-        "ProductCode" = "8:{38EB888A-FCC0-461C-887D-BAEBF04034EB}"
-        "PackageCode" = "8:{F7E1FB4C-3308-4CF7-9478-D51E3A5474AE}"
+        "ProductCode" = "8:{54F70CE7-811A-4CD5-A6D2-FDEC8C9F7E8B}"
+        "PackageCode" = "8:{01E238C6-1E55-4B7F-A453-50AB7211A174}"
         "UpgradeCode" = "8:{57C4BA5D-6641-43AA-A528-E9725E52B926}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
