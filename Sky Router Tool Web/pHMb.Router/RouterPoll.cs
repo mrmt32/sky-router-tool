@@ -27,9 +27,6 @@ namespace pHMb.Router
         #region Private Methods
         private void StartPoll()
         {
-            // Create connection to router
-            //_routerCommand = (Interfaces.IRouterInterface)Activator.CreateInstance(Type.GetType("pHMb.Router.RouterCommandSets." + _routerType), _routerConnection);
-
             PollLoop();
         }
 
