@@ -485,8 +485,26 @@ namespace pHMb.pHHttp
                 _clientSocket.Send(Encoding.ASCII.GetBytes("\r\n"));
             }
 
+            _bodyStarted = true;
+
             if (_httpRequest.Method != "HEAD")
                 _clientSocket.Send(bodyContents);
+        }
+
+        public Socket SendResponseBodySocket()
+        {
+            if (!_responseStringSent)
+            {
+                throw new InvalidOperationException("Status string must be sent before body.");
+            }
+            else if (!_bodyStarted)
+            {
+                _clientSocket.Send(Encoding.ASCII.GetBytes("\r\n"));
+            }
+
+            _bodyStarted = true;
+
+            return _clientSocket;
         }
 
         public void SendAuthorizationRequired()

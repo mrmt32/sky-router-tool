@@ -5,14 +5,15 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{F35D827E-46BF-4560-8D98-A6933345C2F0}</ProjectGuid>
+    <ProjectGuid>{D0205CE5-C92F-4D2C-89F8-AB6BC9105C03}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>pHMb.Router</RootNamespace>
-    <AssemblyName>pHMb.Router</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <RootNamespace>pHMb.pH_Http</RootNamespace>
+    <AssemblyName>pHMb.pH-Http</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <StartupObject>
+    </StartupObject>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
@@ -30,8 +31,10 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -71,74 +74,79 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=3.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\3rd Party\Json.NET-3.5-Beta4\Bin\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Data.SqlServerCe, Version=3.5.1.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Transactions" />
-    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data.DataSetExtensions">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
-      <Private>False</Private>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConnectionDetails.cs" />
-    <Compile Include="ErrorDetails.cs" />
-    <Compile Include="Interfaces\IRouterConnection.cs" />
-    <Compile Include="Loggers\Errors.cs" />
-    <Compile Include="Router Command-sets\BCM6348.cs" />
-    <Compile Include="Router Command-sets\busybox.cs" />
-    <Compile Include="Router Command-sets\FAST2504_http.cs" />
-    <Compile Include="Router Command-sets\DG834GT.cs" />
-    <Compile Include="Exceptions\LoggerException.cs" />
-    <Compile Include="Interfaces\ILogger.cs" />
-    <Compile Include="Loggers\BandwidthUsage.cs" />
-    <Compile Include="Loggers\Snrm.cs" />
+    <Compile Include="HttpClient.cs" />
+    <Compile Include="HttpException.cs" />
+    <Compile Include="HttpServer.cs" />
+    <Compile Include="ISSHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Settings.Designer.cs">
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>Settings.settings</DependentUpon>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Router Command-sets\DG934G.cs" />
-    <Compile Include="Interfaces\IRouterInterface.cs" />
-    <Compile Include="Interfaces\IRouterData.cs" />
-    <Compile Include="Router Command-sets\F%40ST2504.cs" />
-    <Compile Include="RouterHttp.cs" />
-    <Compile Include="RouterPoll.cs">
-    </Compile>
-    <Compile Include="RouterProcess.cs" />
-    <Compile Include="SkyPasswordGen.cs" />
-    <Compile Include="SyncDetails.cs" />
-    <Compile Include="TelnetConnector.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config">
+    <Content Include="htdocs\show_video.htm">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </Content>
+    <Content Include="index_pages.conf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="mime_types.conf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="SSHandlers\CgiHandler.cs" />
+    <Compile Include="SSHandlers\Debug.cs" />
+    <Compile Include="SSHandlers\DefaultHandler.cs" />
+    <Compile Include="StringValueAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="routerlogs.sdf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="settings.sdf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <ProjectReference Include="..\..\..\..\ExPVR\Source\Libraries\pHM.DVBLib.Common.DataTypes\pHM.DVBLib.Common.DataTypes.csproj">
+      <Project>{E6024D29-5C42-4269-B000-CF915C739153}</Project>
+      <Name>pHM.DVBLib.Common.DataTypes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\ExPVR\Source\Libraries\pHM.DVBLib.TransportStream\pHM.DVBLib.TransportStream.csproj">
+      <Project>{3EAD7A65-C1FA-47BE-8128-D2B066B0AF81}</Project>
+      <Name>pHM.DVBLib.TransportStream</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\ExPVR\Source\Libraries\pHMb.Fat32\pHMb.Fat32.csproj">
+      <Project>{E657EF5E-09D2-4C85-8069-7DFAFBCE2BBB}</Project>
+      <Name>pHMb.Fat32</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -146,29 +154,9 @@
       <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.SQL.Server.Compact.3.5">
-      <Visible>False</Visible>
-      <ProductName>SQL Server Compact 3.5 SP2</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
@@ -177,6 +165,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

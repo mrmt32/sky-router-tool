@@ -165,9 +165,26 @@ namespace pHMb.pHHttp
 
         public void StartServer()
         {
-            _tcpListener = new TcpListener(IPAddress.Any, Port);
-            _tcpListener.Start();
+            FindPort();
+
             _tcpListener.BeginAcceptSocket(new AsyncCallback(ClientConnect), new object());
+        }
+
+        private void FindPort()
+        {
+            try
+            {
+                _tcpListener = new TcpListener(IPAddress.Any, Port);
+                _tcpListener.Start();
+            }
+            catch (SocketException ex)
+            {
+                if (ex.SocketErrorCode == System.Net.Sockets.SocketError.AddressAlreadyInUse)
+                {
+                    this.Port += 1;
+                    FindPort();
+                }
+            }
         }
 
         public void StopServer()
