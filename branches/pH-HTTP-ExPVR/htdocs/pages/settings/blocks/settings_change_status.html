@@ -1,0 +1,39 @@
+<&contentdata
+block_name = 'settings_change_status_block'
+author = 'mrmt32'
+type = 'block'
+>
+	<h2>Settings</h2>
+	
+	<&javascript>
+		if (parameters.jsonResponse.isError)
+		{
+			output = "<p>An error occured while saving your settings. The error returned was:</p>"
+				    + "<p><textarea cols='50' rows='9'>" + parameters.jsonResponse.ErrorString + "</textarea></p>";
+		}
+		else
+		{
+			if (!parameters.dontShowValues)
+			{
+				output = "<p>Your settings where saved successfully. Their new values are:</p>";
+				output += "<table><tbody>";
+				
+				for (setting in parameters.jsonResponse.ReturnData)
+				{
+					output += "<tr>";
+					output += "<td>" + setting + "</td>";
+					output += "<td>" + parameters.jsonResponse.ReturnData[setting] + "</td>";
+					output += "</tr>";
+				}
+				
+				output += "</tbody></table>";
+			}
+			else
+			{
+				output = "<p>Your settings where saved successfully.</p>";
+			}
+		}
+	<&/javascript>
+	
+	<p><button onclick="ChangePage(document.location.hash.substring(1))">OK</button></p>
+<&/contentdata>

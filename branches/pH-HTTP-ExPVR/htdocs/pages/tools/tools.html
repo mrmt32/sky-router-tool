@@ -1,0 +1,37 @@
+<&contentdata
+section_name = 'tools'
+default_page = 'overview'
+author = 'mrmt32'
+type = 'section'
+title = 'Tools'
+display_order = '20'
+>
+<div class='contentBox sideBar'>
+	<ul>
+		<h3>Basic</h3>
+        <&javascript>
+			if (SrtSettings.RouterModel != "F_ST2504")
+			{
+                output = "<li><a href='#tools,speed_test'>Speed Test</a></li>";
+            }
+        <&/javascript>
+		<li><a href='#tools,ping'>Ping</a></li>
+		<li><a href='#tools,sky_password'>Calculate Sky Password</a></li>
+	</ul>
+</div>
+
+<div class='contentBox sideBar'>
+	<ul>
+		<h3>Advanced</h3>
+		<li><a href='#tools,run_command'>Run Command</a></li>
+		<&javascript>
+			if (SrtSettings.RouterModel != "DG934G")
+			{
+			 	output = "<li><a href='#tools,target_snrm'>Target SNR Margin</a></li>";
+				//output += "<li><a href='#tools,dump_firmware'>Dump Firmware</a></li>";
+				//output += "<li><a href='#tools,upgrade_firmware'>Upgrade Firmware</a></li>";
+			}
+		<&/javascript>
+	</ul>
+</div>
+<&/contentdata>

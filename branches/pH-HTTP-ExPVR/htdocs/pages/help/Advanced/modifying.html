@@ -1,0 +1,16 @@
+<&contentdata 
+section_name = 'help'
+page_name = 'modifying'
+author = 'mrmt32'
+type = 'page'
+>
+<h2>Advanced Help - Modifying Sky Router Tool</h2>
+<div class='helpPage'>
+	<p>The full source code for Sky Router Tool is available from <a href="http://www.skyuser.co.uk/forum/technical-discussion/31614-sky-router-tool.html">http://www.skyuser.co.uk/forum/technical-discussion/31614-sky-router-tool.html</a>. Visual Studio .NET 2008 is required to compile the application (older versions of visual studio may work but are untested).</p>
+	
+	<h3>Modifying the Web Interface</h3>
+	<p>The web interface is saved in the 'htdocs' folder of the Sky Router Tool installation directory.</p>
+	<p>index.html contains the basic page layout, all other content is in "contentData.json". This is a json representation of all the pages used in the web interface.</p>
+	<p>In the \Sources\pH-Http\htdocs\pages folder of the source code package you will find an easier-to-edit version of the pages contained in contentData.json. Once you have changed the content of these pages you can update the contentData.json file by running the "updatePages.php" script (this requires PHP to be installed). The pages are largely HTML and javascript but also contain some custom templating tags; I will try and document these at a later stage.</p>
+</div>
+<&/contentdata>

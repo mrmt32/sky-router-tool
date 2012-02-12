@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!--[if lt IE 8]>
+		<style>
+			.textHTML
+			{
+				left: -10px;
+			}
+		</style>
+<![endif]-->
+<link rel="stylesheet" href="./css/main.css" type="text/css" />
+<link rel="stylesheet" href="./css/jquery_ui/redmond/jquery-ui-1.7.2.custom.css" type="text/css" />
+<title>Sky Router Tool</title>
+</head>
+<body class='default'>
+	<script type="text/javascript" src="javascript/jquery-1.3.2.min.js"></script>
+	<script type="text/javascript" src="javascript/jquery-ui-1.7.2.custom.min.js"></script>
+	<!--[if IE]><script language="javascript" type="text/javascript" src="javascript/excanvas.min.js"></script><![endif]-->
+	<script type="text/javascript" src="javascript/jquery.flot.js"></script>
+	<script type="text/javascript" src="javascript/jquery.flot.navigate.js"></script>
+	<script type="text/javascript" src="javascript/main.js"></script>
+	<script type="text/javascript" src="jsIncludes.js"></script>
+	
+	<div class='mainpage'>
+		<div class='header'>
+			<div class='loadingBox'>Loading... <img src="images/loading.gif" alt="loading"/></div>
+			<div class='menubar'>
+				<ul class='mainMenu'></ul>
+			</div>
+		</div>
+		<div class='body'>
+			<div id='content'>
+				<div class='titleBar'>
+					<h1 id="title"></h1>
+					<a href='javascript:ChangePage(document.location.hash.substring(1))' class='refreshButton'><img src="images/refresh.png" alt='Refresh' width="17" /></a>
+				</div>
+				<div id='sidebar'>
+
+				</div>
+				<div class='contentBox contentWithSideBar' id='page'>
+
+				</div>
+			</div>
+		</div>
+		<p class='footer'>
+			&copy;2009 pH-Mb. All Rights Reserved.
+		</p>
+	</div>
+
+</body>
+</html>
