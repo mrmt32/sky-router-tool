@@ -147,6 +147,10 @@
       <Project>{E657EF5E-09D2-4C85-8069-7DFAFBCE2BBB}</Project>
       <Name>pHMb.Fat32</Name>
     </ProjectReference>
+    <ProjectReference Include="..\pHMb.XTV\pHMb.XTV.csproj">
+      <Project>{6E36D9B0-8EB0-48F2-B31C-1AEFC2D6680D}</Project>
+      <Name>pHMb.XTV</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
