@@ -584,7 +584,7 @@ namespace pHMb.pHHttp
                     {
                         case "application/x-www-form-urlencoded":
                             return DecodeQueryString(Encoding.ASCII.GetString(request.PostData));
-                            break;
+
                         default:
                             return null;
                     }
