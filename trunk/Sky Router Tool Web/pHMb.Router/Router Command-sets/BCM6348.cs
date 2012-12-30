@@ -94,7 +94,7 @@ namespace pHMb.Router.RouterCommandSets
         /// Gets various connection details
         /// </summary>
         /// <returns>ConnectionDetails object holding the details</returns>
-        private ConnectionDetails GetConnectionDetails()
+        protected virtual ConnectionDetails GetConnectionDetails()
         {
             ConnectionDetails details = new ConnectionDetails();
             details.DownstreamSync = new SyncDetails();

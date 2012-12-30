@@ -23,7 +23,8 @@ namespace pHMb.AlphaPortal.ContentDataBuilder
         {
 
             FolderBrowserDialog openDialog = new FolderBrowserDialog();
-            openDialog.SelectedPath = @"C:\Users\mrmt32\Documents\visual studio 2010\Projects\Sky Router Tool Web\Sources\pH-Http\htdocs\pages";
+            //openDialog.SelectedPath = @"C:\Users\mrmt32\Documents\visual studio 2010\Projects\Sky Router Tool Web\Sources\pH-Http\htdocs\pages";
+            openDialog.SelectedPath = @"C:\xampp\htdocs\SRT_Lite\pages";
             if (openDialog.ShowDialog() == DialogResult.OK)
             {
                 _folderPath = openDialog.SelectedPath;

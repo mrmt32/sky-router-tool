@@ -75,9 +75,9 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Data.SqlServerCe, Version=3.5.1.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+    <Reference Include="System.Data.SqlServerCe, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
+      <HintPath>C:\Program Files (x86)\Microsoft SQL Server Compact Edition\v3.5\Desktop\System.Data.SqlServerCe.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Transactions" />
@@ -99,6 +99,7 @@
     <Compile Include="Loggers\Errors.cs" />
     <Compile Include="Router Command-sets\BCM6348.cs" />
     <Compile Include="Router Command-sets\busybox.cs" />
+    <Compile Include="Router Command-sets\FAST2504N.cs" />
     <Compile Include="Router Command-sets\FAST2504_http.cs" />
     <Compile Include="Router Command-sets\DG834GT.cs" />
     <Compile Include="Exceptions\LoggerException.cs" />
