@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sky Router Tool Web", "Sky Router Tool Web\Sky Router Tool Web.csproj", "{B0DBA894-C7AE-410B-BEF3-F635BAF34FE4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pHMb.pHHttp", "pH-Http\pHMb.pHHttp.csproj", "{D0205CE5-C92F-4D2C-89F8-AB6BC9105C03}"
